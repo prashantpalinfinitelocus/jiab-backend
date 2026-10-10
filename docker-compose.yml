@@ -1,0 +1,72 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: coca_cola_backend
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - subscriber
+
+  subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile.subscriber
+    container_name: coca_cola_subscriber
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  strapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.strapi.dev
+    container_name: coca_cola_strapi
+    env_file:
+      - .env
+    environment:
+      APP_KEYS: ${STRAPI_APP_KEYS}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT}
+      ENCRYPTION_KEY: ${STRAPI_ENCRYPTION_KEY}
+      JWT_SECRET: ${STRAPI_JWT_SECRET}
+      NODE_ENV: ${APP_ENV}
+      DATABASE_CLIENT: ${STRAPI_DB_CLIENT}
+      DATABASE_HOST: ${STRAPI_DB_HOST}
+      DATABASE_PORT: ${STRAPI_DB_PORT}
+      DATABASE_NAME: ${STRAPI_DB_NAME}
+      DATABASE_USERNAME: ${STRAPI_DB_USER}
+      DATABASE_PASSWORD: ${STRAPI_DB_PASSWORD}
+      DATABASE_SSL: ${STRAPI_DB_SSL}
+      DATABASE_FILENAME: ${STRAPI_DB_FILENAME}
+      DATABASE_SSL_REJECT_UNAUTHORIZED: ${STRAPI_DB_SSL_REJECT_UNAUTHORIZED}
+    ports:
+      - "${STRAPI_PORT:-1337}:1337"
+    volumes:
+      - ./strapi:/srv/app
+      - /srv/app/node_modules
+    depends_on:
+      - strapi-db
+  strapi-db:
+    image: postgres:15-alpine
+    container_name: coca_cola_strapi_db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${STRAPI_DB_NAME}
+      POSTGRES_USER: ${STRAPI_DB_USER}
+      POSTGRES_PASSWORD: ${STRAPI_DB_PASSWORD}
+    volumes:
+      - strapi-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  strapi-data:
+    driver: local

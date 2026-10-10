@@ -1,0 +1,37 @@
+FROM node:18-alpine
+
+RUN apk add --no-cache python3 make g++ sqlite-dev
+
+# Set working directory
+WORKDIR /srv/app
+
+# Set NODE_ENV to production
+ENV NODE_ENV=production
+
+# Copy package.json and package-lock.json
+COPY ./strapi/package*.json ./
+
+# Copy patches directory
+COPY ./strapi/patches ./patches
+
+# Install dependencies in two steps to handle the patch-package properly
+# First, install dependencies without running scripts
+RUN npm install --ignore-scripts
+
+# Now run patch-package manually after dependencies are installed
+RUN npx patch-package
+
+# Make sure better-sqlite3 is properly installed and compiled
+RUN npm install better-sqlite3 --build-from-source
+
+# Copy application code
+COPY ./strapi .
+
+# Build the application for production
+RUN npm run build
+
+# Expose port
+EXPOSE 8080
+
+# Start in production mode (serves built static files)
+CMD ["npm", "run", "start"]

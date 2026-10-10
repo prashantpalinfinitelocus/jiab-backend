@@ -1,0 +1,29 @@
+# Stage 1: Build
+FROM golang:1.25-alpine AS builder
+ 
+WORKDIR /app
+ 
+COPY go.mod go.sum ./
+RUN go mod download
+ 
+COPY . .
+ 
+ENV CGO_ENABLED=0
+RUN go build -o app .
+ 
+# Stage 2: Runtime
+FROM alpine:latest
+ 
+WORKDIR /app
+ 
+RUN apk --no-cache add ca-certificates
+ 
+COPY --from=builder /app/app .
+ 
+# Copy Firebase creds only if absolutely needed
+COPY firebase-service-account.example.json .
+# COPY coca-cola-461508-d4911e657d6e.json .
+ 
+EXPOSE 8080
+ 
+CMD ["./app", "server"]

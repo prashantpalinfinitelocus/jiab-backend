@@ -1,0 +1,8 @@
+services:
+  app:
+    volumes:
+      - ${SSH_KEY_PATH}:/app/ssh-key.pem:ro
+
+  # consumer:
+  #   volumes:
+  #     - ${SSH_KEY_PATH}:/app/ssh-key.pem:ro

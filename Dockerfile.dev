@@ -1,0 +1,60 @@
+# Stage 1: Build the Go binary
+FROM golang:1.25-alpine AS builder
+
+WORKDIR /app
+
+# Copy go.mod and go.sum and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy all source code
+COPY . .
+
+# GIT_COMMIT is baked into the binary so a deployed instance's /health can
+# report exactly what it's running - lets you confirm a deploy actually
+# picked up a given commit instead of inferring it from whether a bug still
+# reproduces.
+ARG GIT_COMMIT=unknown
+RUN go build -ldflags "-X github.com/Infinite-Locus-Product/coca_cola_backend/version.GitCommit=${GIT_COMMIT}" -o app .
+
+# Stage 2: Minimal runtime i
+FROM alpine:latest
+
+WORKDIR /app
+
+# Install CA certs (recommended for HTTPS), a real bold sans font, and
+# ffmpeg. Without a font on disk, utils.loadPreferredFontFace's whole
+# candidate list (Impact, DejaVu, Liberation, FreeSans, Arial) fails to stat,
+# and meme text silently falls back to basicfont.Face7x13 - a tiny fixed-size
+# bitmap face, which is why generated meme text looked like thin hollow
+# characters instead of the frontend's bold branded font. font-dejavu
+# provides /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf, already
+# first in that candidate list, so this needs no code change to take effect.
+# ffmpeg backs utils.ProcessGIF's preferred encoding path (two-pass palette
+# generation) - it silently falls back to a hand-rolled Go quantizer when the
+# binary isn't found, so this is required to get the better path, not to
+# avoid a crash.
+RUN apk --no-cache add ca-certificates font-dejavu ffmpeg
+
+# Copy the built Go binary
+COPY --from=builder /app/app .
+
+# Copy environment config and Firebase credentials
+
+#COPY firebase-service-account.json .
+#COPY pub-sub-test.json .
+
+# Expose your app's port (customize if needed)
+EXPOSE 8080
+
+# Start the Go server (adjust if your app requires arguments)
+CMD ["./app", "server"]
+
+
+
+
+
+
+
+
+

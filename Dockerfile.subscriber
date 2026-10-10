@@ -1,0 +1,61 @@
+# ---- Build Stage ----
+FROM golang:1.25-alpine AS builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Install necessary build tools.
+# git is required for go get to work correctly.
+# gcc and musl-dev are for cgo.
+RUN apk update && apk add --no-cache git gcc musl-dev
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the source code into the container
+COPY ./cmd ./cmd
+COPY ./services ./services
+COPY ./vendors ./vendors
+COPY ./config ./config
+COPY ./utils ./utils
+COPY ./constants ./constants
+COPY ./entities ./entities
+COPY ./pubsub ./pubsub
+COPY ./kafka ./kafka
+COPY ./dtos ./dtos
+COPY ./errors ./errors
+COPY ./repository ./repository
+
+
+
+# Build the Go app
+# CGO_ENABLED=0 creates a static binary which is what we want for a small final image
+# -ldflags="-w -s" reduces the size of the binary by stripping debug information.
+RUN CGO_ENABLED=0 go build -o /app/subscriber -ldflags="-w -s" ./cmd/subscriber/main.go
+
+# ---- Final Stage ----
+FROM alpine:latest
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy the built binary from the builder stage
+COPY --from=builder /app/subscriber .
+
+
+# The subscriber uses Firebase and Google PubSub, which need credentials.
+# This copies the service account key files into the image.
+#COPY firebase-service-account.json .
+#COPY pub-sub-test.json .
+
+EXPOSE 8080
+
+# It's a good practice to run containers as a non-root user for security.
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+# This command runs your application
+CMD ["./subscriber"] 

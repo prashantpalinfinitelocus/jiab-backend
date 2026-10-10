@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "dummy_test_features",
+  "info": {
+    "singularName": "dummy-test-feature",
+    "pluralName": "dummy-test-features",
+    "displayName": "dummy_test_feature"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "hello": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

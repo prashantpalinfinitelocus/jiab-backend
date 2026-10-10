@@ -1,0 +1,3718 @@
+basePath: /main/api/v1
+definitions:
+  dtos.ActivateJokeConsumptionRequest:
+    properties:
+      joke_id:
+        type: string
+    required:
+    - joke_id
+    type: object
+  dtos.AddUserReelReactionRequest:
+    properties:
+      assetId:
+        type: string
+      reaction:
+        type: string
+    required:
+    - assetId
+    - reaction
+    type: object
+  dtos.AddressRequestDTO:
+    properties:
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      is_default:
+        type: boolean
+      nearest_landmark:
+        type: string
+      pincode:
+        type: integer
+      shipping_mobile:
+        type: string
+      state:
+        type: string
+    type: object
+  dtos.AddressResponseDTO:
+    properties:
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      created_on:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      is_default:
+        type: boolean
+      last_modified_on:
+        type: string
+      nearest_landmark:
+        type: string
+      pincode:
+        type: integer
+      shipping_mobile:
+        type: string
+      state:
+        type: string
+    type: object
+  dtos.AdminPendingMemeItem:
+    properties:
+      asseturl:
+        type: string
+      category:
+        type: string
+      id:
+        type: string
+      languageId:
+        type: string
+      submittedAt:
+        type: string
+      submittedBy:
+        type: string
+      text1:
+        type: string
+      text2:
+        type: string
+    type: object
+  dtos.AdminPendingMemesResponse:
+    properties:
+      cursor:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/dtos.AdminPendingMemeItem'
+        type: array
+    type: object
+  dtos.AnswerQuestionsRequestDTO:
+    properties:
+      answer_id:
+        type: integer
+      question_id:
+        type: integer
+      question_number:
+        type: integer
+    type: object
+  dtos.ApproveMemeRequest:
+    properties:
+      languageId:
+        type: integer
+      notes:
+        type: string
+    type: object
+  dtos.ApproveMemeResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  dtos.BroadcastNotificationDTO:
+    properties:
+      base_url:
+        type: string
+      body:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - title
+    type: object
+  dtos.BulkRegisterMemeTemplateItem:
+    properties:
+      content_type:
+        type: string
+      episode:
+        type: string
+      gcs_object_path:
+        type: string
+      gcs_url:
+        type: string
+      genre:
+        type: string
+      original_filename:
+        type: string
+    required:
+    - gcs_object_path
+    - gcs_url
+    - genre
+    type: object
+  dtos.BulkRegisterMemeTemplatesRequest:
+    properties:
+      templates:
+        items:
+          $ref: '#/definitions/dtos.BulkRegisterMemeTemplateItem'
+        type: array
+    required:
+    - templates
+    type: object
+  dtos.BulkRegisterMemeTemplatesResponse:
+    properties:
+      registered:
+        type: integer
+    type: object
+  dtos.ChangePlagiarizedInfoStatusRequest:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  dtos.ChangeUGCStatusRequest:
+    properties:
+      status:
+        description: '2: Accepted, 4: Rejected, 3: Plagiarized'
+        maximum: 4
+        minimum: 2
+        type: integer
+      videoId:
+        type: string
+    required:
+    - status
+    - videoId
+    type: object
+  dtos.ContestAnnouncementDTO:
+    properties:
+      announcement_type:
+        description: '"launch" or "reminder"'
+        type: string
+      body:
+        type: string
+      contest_id:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+    required:
+    - announcement_type
+    - body
+    - contest_id
+    - title
+    type: object
+  dtos.CreateOptionDTO:
+    properties:
+      display_order:
+        type: integer
+      id:
+        description: Nullable for creation
+        type: integer
+      is_active:
+        type: boolean
+      option_text:
+        type: string
+    type: object
+  dtos.CreateQuestionDTO:
+    properties:
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      language_id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/dtos.CreateOptionDTO'
+        type: array
+      ques_point:
+        type: integer
+      question_text:
+        type: string
+    type: object
+  dtos.CreateQuestionsRequestDTO:
+    properties:
+      questions:
+        items:
+          $ref: '#/definitions/dtos.CreateQuestionDTO'
+        type: array
+    type: object
+  dtos.DSRRequestDTO:
+    properties:
+      country:
+        type: string
+      email:
+        type: string
+      fields:
+        additionalProperties: true
+        type: object
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      request_type:
+        enum:
+        - delete
+        - update
+        - access
+        type: string
+    required:
+    - phone_number
+    - request_type
+    type: object
+  dtos.EditProfileRequestDTO:
+    type: object
+  dtos.FCMDeviceTokenResponseDTO:
+    properties:
+      created_on:
+        type: string
+      device_token:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      is_deleted:
+        type: boolean
+      last_modified_on:
+        type: string
+      user_id:
+        type: string
+    type: object
+  dtos.GenerateReferralRequest:
+    properties:
+      refer_to:
+        maxLength: 10
+        minLength: 10
+        type: string
+    required:
+    - refer_to
+    type: object
+  dtos.GenrePaginatedResponse:
+    properties:
+      genres:
+        items:
+          $ref: '#/definitions/dtos.JokeGenreResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dtos.GetComicCoinResponseDTO:
+    properties:
+      comic_coin:
+        type: integer
+      created_at:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dtos.GetQuestionByTextRequestDTO:
+    properties:
+      language_id:
+        type: integer
+      question_text:
+        type: string
+    required:
+    - language_id
+    - question_text
+    type: object
+  dtos.GetTokensByDateResponseDTO:
+    properties:
+      count:
+        type: integer
+      date:
+        type: string
+      tokens:
+        items:
+          $ref: '#/definitions/dtos.FCMDeviceTokenResponseDTO'
+        type: array
+    type: object
+  dtos.GiphyAutocompleteItem:
+    properties:
+      name:
+        type: string
+    type: object
+  dtos.GiphyTemplate:
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  dtos.IncrementCoinCountResponseDTO:
+    properties:
+      message:
+        type: string
+      show_coin_animation:
+        type: boolean
+    type: object
+  dtos.JokeFormatPaginatedResponse:
+    properties:
+      formats:
+        items:
+          $ref: '#/definitions/dtos.JokeFormatResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dtos.JokeFormatResponse:
+    properties:
+      icon_url:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      title:
+        type: string
+      value:
+        type: string
+    type: object
+  dtos.JokeGenreResponse:
+    properties:
+      emo_index:
+        type: integer
+      emo_is_active:
+        type: boolean
+      genre:
+        type: string
+      genre_emoticon:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_active:
+        type: boolean
+    type: object
+  dtos.JokeResponseDTO:
+    properties:
+      artist_id:
+        type: string
+      genre_image:
+        type: string
+      id:
+        type: string
+      is_exhausted:
+        type: boolean
+      joke_creator:
+        type: string
+      joke_genre:
+        type: string
+      joke_language:
+        type: string
+      like_count:
+        type: integer
+      thumbnail_url:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+      user_reaction:
+        $ref: '#/definitions/dtos.UserReaction'
+      view_count:
+        type: integer
+    type: object
+  dtos.LanguagePaginatedResponse:
+    properties:
+      languages:
+        items:
+          $ref: '#/definitions/dtos.LanguageResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dtos.LanguageResponse:
+    properties:
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      language_key:
+        type: string
+      name:
+        type: string
+    type: object
+  dtos.LeaderboardEntryDTO:
+    properties:
+      avatar:
+        type: string
+      coins:
+        type: integer
+      mobile:
+        type: string
+      user_id:
+        type: string
+      user_rank:
+        type: integer
+      winner_reward:
+        $ref: '#/definitions/dtos.WinnerRewardDTO'
+    type: object
+  dtos.LeaderboardResponseDTO:
+    properties:
+      my_rank:
+        $ref: '#/definitions/dtos.LeaderboardEntryDTO'
+      top_users:
+        items:
+          $ref: '#/definitions/dtos.LeaderboardEntryDTO'
+        type: array
+    type: object
+  dtos.LocationResponseDTO:
+    properties:
+      city:
+        type: string
+      pincode:
+        type: integer
+      state:
+        type: string
+    type: object
+  dtos.MemeDetailResponse:
+    properties:
+      assetUrl:
+        type: string
+      hasVoted:
+        type: boolean
+      id:
+        type: string
+      language:
+        type: string
+      reactionClick:
+        $ref: '#/definitions/dtos.ReactionClick'
+      reactionCounts:
+        $ref: '#/definitions/dtos.ReactionCounts'
+      status:
+        type: integer
+      viewCount:
+        type: integer
+    type: object
+  dtos.MemeFeedItem:
+    properties:
+      assetUrl:
+        type: string
+      avatarImage:
+        type: string
+      hasVoted:
+        type: boolean
+      id:
+        type: string
+      language:
+        type: string
+      reactionClick:
+        $ref: '#/definitions/dtos.ReactionClick'
+      reactionCounts:
+        $ref: '#/definitions/dtos.ReactionCounts'
+      username:
+        type: string
+      viewCount:
+        type: integer
+    type: object
+  dtos.MemeFeedResponse:
+    properties:
+      cursor:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/dtos.MemeFeedItem'
+        type: array
+    type: object
+  dtos.MemeGeneratorResponse:
+    properties:
+      image_url:
+        type: string
+      message:
+        type: string
+    type: object
+  dtos.MemeIncrementViewResponse:
+    properties:
+      memeId:
+        type: string
+      viewCount:
+        type: integer
+    type: object
+  dtos.MemeReactRequest:
+    properties:
+      reaction:
+        type: string
+    required:
+    - reaction
+    type: object
+  dtos.MemeSubmitResponseData:
+    properties:
+      memeId:
+        type: string
+      status:
+        type: string
+    type: object
+  dtos.MemeVoteRequest:
+    properties:
+      asset_id:
+        type: string
+    required:
+    - asset_id
+    type: object
+  dtos.NotificationCountResponse:
+    properties:
+      count:
+        type: integer
+    type: object
+  dtos.NotificationResponse:
+    properties:
+      notifications:
+        items:
+          $ref: '#/definitions/dtos.NotificationResponseDTO'
+        type: array
+      page_number:
+        type: integer
+      page_size:
+        type: integer
+      total_count:
+        type: integer
+    type: object
+  dtos.NotificationResponseDTO:
+    properties:
+      icon_url:
+        type: string
+      is_new:
+        type: boolean
+      is_read:
+        type: boolean
+      launch_date:
+        type: string
+      notification_text:
+        type: string
+      notification_title:
+        type: string
+    type: object
+  dtos.NotificationSendResult:
+    properties:
+      eligible:
+        type: integer
+      failed:
+        type: integer
+      sent:
+        type: integer
+      skipped:
+        type: integer
+    type: object
+  dtos.OptionDTO:
+    properties:
+      display_order:
+        type: integer
+      id:
+        type: integer
+      option_text:
+        type: string
+    type: object
+  dtos.PhoneNotificationDTO:
+    properties:
+      body:
+        type: string
+      image_url:
+        type: string
+      phone_number:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - phone_number
+    - title
+    type: object
+  dtos.PlagiarizedInfoRequest:
+    properties:
+      assetId:
+        type: string
+      information:
+        type: string
+    required:
+    - assetId
+    - information
+    type: object
+  dtos.PlagiarizedInfoResponse:
+    properties:
+      asset_id:
+        type: string
+      id:
+        type: integer
+      information:
+        type: string
+      message:
+        type: string
+    type: object
+  dtos.ProfileCompletionCampaignDTO:
+    properties:
+      body:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - title
+    type: object
+  dtos.ProfileResponseDTO:
+    properties:
+      current_balance:
+        type: integer
+      rank:
+        type: integer
+      user:
+        $ref: '#/definitions/entities.User'
+    type: object
+  dtos.ProfilingQuestionModalResponseDTO:
+    properties:
+      question_number:
+        type: integer
+      show_modal:
+        type: boolean
+    type: object
+  dtos.QuestionResponseDTO:
+    properties:
+      id:
+        type: integer
+      language_id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/dtos.OptionDTO'
+        type: array
+      ques_point:
+        type: integer
+      question_text:
+        type: string
+      selected_option:
+        type: integer
+    type: object
+  dtos.ReactionClick:
+    properties:
+      happy:
+        type: integer
+      neutral:
+        type: integer
+      sad:
+        type: integer
+    type: object
+  dtos.ReactionCounts:
+    properties:
+      happy:
+        type: integer
+      neutral:
+        type: integer
+      sad:
+        type: integer
+    type: object
+  dtos.ReferralListResponse:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      referrals:
+        items:
+          $ref: '#/definitions/dtos.ReferralStatusResponse'
+        type: array
+      total:
+        type: integer
+    type: object
+  dtos.ReferralResponse:
+    properties:
+      referral_code:
+        type: string
+    type: object
+  dtos.ReferralStatusResponse:
+    properties:
+      id:
+        type: integer
+      mobile_number:
+        type: string
+      status:
+        type: string
+    type: object
+  dtos.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  dtos.RegisterDeviceDTO:
+    properties:
+      device_token:
+        type: string
+    required:
+    - device_token
+    type: object
+  dtos.RejectMemeRequest:
+    properties:
+      reason:
+        type: string
+    required:
+    - reason
+    type: object
+  dtos.RejectMemeResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  dtos.RequestOTPRequest:
+    properties:
+      mobile_number:
+        maxLength: 10
+        minLength: 10
+        type: string
+    required:
+    - mobile_number
+    type: object
+  dtos.SSOAuthenticateRequest:
+    properties:
+      sso_token:
+        type: string
+    required:
+    - sso_token
+    type: object
+  dtos.SSOAuthenticateResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      is_new_user:
+        type: boolean
+      name:
+        type: string
+      phone_number:
+        type: string
+      refresh_token:
+        type: string
+      token_type:
+        type: string
+      user_id:
+        type: string
+    type: object
+  dtos.SSOInitiateRequest:
+    properties:
+      name:
+        maxLength: 255
+        minLength: 2
+        type: string
+      phone_number:
+        maxLength: 10
+        minLength: 10
+        type: string
+    required:
+    - name
+    - phone_number
+    type: object
+  dtos.SSOInitiateResponse:
+    properties:
+      expires_at:
+        type: string
+      expires_in:
+        type: integer
+      redirect_url:
+        type: string
+      sso_token:
+        type: string
+    type: object
+  dtos.SendReferralAgainRequest:
+    properties:
+      referral_id:
+        type: integer
+    required:
+    - referral_id
+    type: object
+  dtos.SignUpRequest:
+    properties:
+      avatar_id:
+        type: integer
+      device_token:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      mobile_number:
+        maxLength: 10
+        minLength: 10
+        type: string
+      referral_code:
+        type: string
+    required:
+    - full_name
+    - mobile_number
+    type: object
+  dtos.TokenResponse:
+    properties:
+      access_token:
+        type: string
+      email:
+        type: string
+      expires_in:
+        type: integer
+      mobile_number:
+        type: string
+      name:
+        type: string
+      refresh_token:
+        type: string
+      token_type:
+        type: string
+      user_id:
+        type: string
+    type: object
+  dtos.UGCAssessmentRequest:
+    properties:
+      end_date:
+        type: string
+      genre_id:
+        type: integer
+      language_id:
+        type: integer
+      source:
+        type: integer
+      start_date:
+        type: string
+    required:
+    - end_date
+    - start_date
+    type: object
+  dtos.UGCContentArtistDTO:
+    properties:
+      artist_name:
+        type: string
+      id:
+        type: string
+    type: object
+  dtos.UGCContentByIDsDTO:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    required:
+    - ids
+    type: object
+  dtos.UGCContentByIDsResponseDTO:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+    type: object
+  dtos.UGCContentResponseDTO:
+    properties:
+      content_url:
+        type: string
+      date:
+        type: string
+      format:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+      thumbnail_url:
+        type: string
+      title:
+        type: string
+    type: object
+  dtos.UserMemesItem:
+    properties:
+      assetUrl:
+        type: string
+      avatarImage:
+        type: string
+      createdAt:
+        type: string
+      hasVoted:
+        type: boolean
+      id:
+        type: string
+      language:
+        type: string
+      reactionClick:
+        $ref: '#/definitions/dtos.ReactionClick'
+      reactionCounts:
+        $ref: '#/definitions/dtos.ReactionCounts'
+      status:
+        type: integer
+      username:
+        type: string
+      viewCount:
+        type: integer
+    type: object
+  dtos.UserMemesResponse:
+    properties:
+      cursor:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/dtos.UserMemesItem'
+        type: array
+    type: object
+  dtos.UserReaction:
+    properties:
+      laugh:
+        type: integer
+      like:
+        type: integer
+      neutral:
+        type: integer
+      sad:
+        type: integer
+      share:
+        type: integer
+    type: object
+  dtos.VerifyOTPRequest:
+    properties:
+      mobile_number:
+        maxLength: 10
+        minLength: 10
+        type: string
+      otp:
+        maxLength: 6
+        minLength: 6
+        type: string
+    required:
+    - mobile_number
+    - otp
+    type: object
+  dtos.VerifyReferralRequest:
+    properties:
+      referral_code:
+        type: string
+    required:
+    - referral_code
+    type: object
+  dtos.VoucherInfoDTO:
+    properties:
+      assigned_on:
+        type: string
+      button_value:
+        type: string
+      id:
+        type: integer
+      last_date_to_redeem:
+        type: string
+      secure_code:
+        type: integer
+      secure_code_available:
+        type: boolean
+      voucher_code:
+        type: string
+      voucher_description:
+        type: string
+      voucher_image:
+        type: string
+      voucher_name:
+        type: string
+      voucher_url:
+        type: string
+    type: object
+  dtos.WinnerRewardDTO:
+    properties:
+      description:
+        type: string
+      image_url:
+        type: string
+    type: object
+  entities.Avatar:
+    properties:
+      created_by:
+        type: string
+      created_on:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_active:
+        type: boolean
+      is_deleted:
+        type: boolean
+      is_published:
+        type: boolean
+      last_modified_by:
+        type: string
+      last_modified_on:
+        type: string
+      name:
+        type: string
+      published_by:
+        type: string
+      published_on:
+        type: string
+    type: object
+  entities.User:
+    properties:
+      access_failed_count:
+        type: integer
+      alternate_mobile:
+        type: string
+      avatar_id:
+        type: integer
+      contest_onboarding_status:
+        type: boolean
+      dob:
+        type: string
+      email:
+        type: string
+      email_confirmed:
+        type: boolean
+      gender:
+        type: integer
+      home_onboarding_status:
+        type: boolean
+      id:
+        type: string
+      ip_address:
+        type: string
+      is_active:
+        type: boolean
+      is_profile_complete:
+        type: boolean
+      is_profile_popup:
+        type: boolean
+      is_referral:
+        type: boolean
+      is_tamil:
+        type: boolean
+      last_language_selection:
+        type: integer
+      lockout_enabled:
+        type: boolean
+      name:
+        type: string
+      phone_number:
+        type: string
+      phone_number_confirmed:
+        type: boolean
+      platform_master_id:
+        type: integer
+      profile_percentage:
+        type: integer
+      profile_picture:
+        type: string
+      refer_by:
+        type: string
+      referral_code:
+        type: string
+      refresh_token:
+        type: string
+      refresh_token_expiry_time:
+        type: string
+      registered_on:
+        type: string
+      two_factor_enabled:
+        type: boolean
+    type: object
+  utils.ErrorType:
+    properties:
+      code:
+        type: string
+      details:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_AddressResponseDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.AddressResponseDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_JokeResponseDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.JokeResponseDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_QuestionResponseDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.QuestionResponseDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_UGCContentArtistDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.UGCContentArtistDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_UGCContentByIDsResponseDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.UGCContentByIDsResponseDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_UGCContentResponseDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.UGCContentResponseDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_dtos_VoucherInfoDTO:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dtos.VoucherInfoDTO'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-array_entities_Avatar:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.Avatar'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_AddressResponseDTO:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.AddressResponseDTO'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_GenrePaginatedResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.GenrePaginatedResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_GetComicCoinResponseDTO:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.GetComicCoinResponseDTO'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_JokeFormatPaginatedResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.JokeFormatPaginatedResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_JokeGenreResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.JokeGenreResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_JokeResponseDTO:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.JokeResponseDTO'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_LanguagePaginatedResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.LanguagePaginatedResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_LanguageResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.LanguageResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_NotificationCountResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.NotificationCountResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_NotificationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.NotificationResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_PlagiarizedInfoResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.PlagiarizedInfoResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_ProfileResponseDTO:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.ProfileResponseDTO'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_ProfilingQuestionModalResponseDTO:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.ProfilingQuestionModalResponseDTO'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_QuestionResponseDTO:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.QuestionResponseDTO'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_ReferralListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.ReferralListResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_ReferralResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.ReferralResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-dtos_TokenResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dtos.TokenResponse'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-entities_User:
+    properties:
+      data:
+        $ref: '#/definitions/entities.User'
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-int:
+    properties:
+      data:
+        type: integer
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+  utils.ResponseType-string:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+      success:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the API documentation for the Coca Cola Backend.
+  title: Coca Cola Backend API
+  version: "1.0"
+paths:
+  /admin/meme-templates/bulk-register:
+    post:
+      consumes:
+      - application/json
+      description: Registers already-uploaded GCS objects as meme templates (upload
+        and registration are separate steps)
+      parameters:
+      - description: Templates to register
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.BulkRegisterMemeTemplatesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration summary
+          schema:
+            $ref: '#/definitions/dtos.BulkRegisterMemeTemplatesResponse'
+      summary: Bulk-register meme templates
+      tags:
+      - Admin Meme Templates
+  /admin/memes/{id}/approve:
+    post:
+      consumes:
+      - application/json
+      description: Approve a pending meme for publication
+      parameters:
+      - description: Meme ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Approval details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ApproveMemeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Meme approved successfully
+          schema:
+            $ref: '#/definitions/dtos.ApproveMemeResponse'
+      summary: Approve a meme
+      tags:
+      - Admin Meme Moderation
+  /admin/memes/{id}/reject:
+    post:
+      consumes:
+      - application/json
+      description: Reject a pending meme with a reason
+      parameters:
+      - description: Meme ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Rejection details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RejectMemeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Meme rejected successfully
+          schema:
+            $ref: '#/definitions/dtos.RejectMemeResponse'
+      summary: Reject a meme
+      tags:
+      - Admin Meme Moderation
+  /admin/memes/pending:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of pending memes awaiting admin moderation
+      parameters:
+      - default: 15
+        description: Number of results to return
+        in: query
+        name: limit
+        type: integer
+      - description: Cursor for pagination
+        in: query
+        name: cursor
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of pending memes
+          schema:
+            $ref: '#/definitions/dtos.AdminPendingMemesResponse'
+      summary: List pending memes for moderation
+      tags:
+      - Admin Meme Moderation
+  /analytics/progressive-profiling/export:
+    get:
+      description: Builds an .xlsx workbook of every submitted progressive-profiling
+        answer (bottle count, daypart preference, comedy genre preference — see constants.ProgressiveProfilingCDPEventPrefixes)
+        as CDP-shaped events, uploads it to cloud storage, and returns a signed download
+        URL. Excludes Buy_Now/partner events entirely.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Signed URL to the .xlsx file in the url field
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: CDP backfill export for progressive-profiling answers
+      tags:
+      - Analytics
+  /analytics/tokens-by-date:
+    get:
+      consumes:
+      - application/json
+      description: Get all FCM device tokens that were last modified on a specific
+        date (for analytics)
+      parameters:
+      - description: Date in YYYY-MM-DD format (e.g., 2025-10-08)
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/dtos.GetTokensByDateResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get FCM device tokens by date
+      tags:
+      - Analytics
+  /api/v1/avatars:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all active avatars from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_entities_Avatar'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      summary: Get all active avatars
+      tags:
+      - avatars
+  /api/v1/location/pincode:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves state and city for a given pincode
+      parameters:
+      - description: Pincode
+        in: query
+        name: pincode
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.LocationResponseDTO'
+        "400":
+          description: Invalid pincode format
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "404":
+          description: Pincode not found
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      summary: Get Location Details by Pincode
+      tags:
+      - location
+  /auth/WA/validate-contact-no:
+    post:
+      consumes:
+      - application/json
+      description: Check if a contact number is already registered
+      parameters:
+      - description: Contact Number
+        in: query
+        name: contactNo
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Valid contact number
+          schema:
+            $ref: '#/definitions/utils.ResponseType-int'
+        "409":
+          description: Number already in use
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      summary: Validate Contact Number
+      tags:
+      - auth
+  /auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Refresh Token for authentication
+      parameters:
+      - description: Refresh Token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token refreshed successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_TokenResponse'
+      summary: Refresh Token
+      tags:
+      - auth
+  /auth/request-otp:
+    post:
+      consumes:
+      - application/json
+      description: Request OTP for authentication
+      parameters:
+      - description: Request OTP
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RequestOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP sent successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      summary: Request OTP
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Sign Up for authentication
+      parameters:
+      - description: Sign Up
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User signed up successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Sign Up
+      tags:
+      - auth
+  /auth/sso/authenticate:
+    post:
+      consumes:
+      - application/json
+      description: Exchange a short-lived SSO token for JWT access and refresh tokens
+      parameters:
+      - description: SSO token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.SSOAuthenticateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Authentication successful
+          schema:
+            $ref: '#/definitions/dtos.SSOAuthenticateResponse'
+      summary: Authenticate via SSO token
+      tags:
+      - auth
+  /auth/sso/initiate:
+    post:
+      consumes:
+      - application/json
+      description: Partner site initiates SSO by sending phone number and name; returns
+        a short-lived SSO token and redirect URL
+      parameters:
+      - description: User details from partner
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.SSOInitiateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SSO token generated successfully
+          schema:
+            $ref: '#/definitions/dtos.SSOInitiateResponse'
+      summary: Initiate SSO flow (Partner endpoint)
+      tags:
+      - auth
+  /auth/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP for authentication
+      parameters:
+      - description: Verify OTP
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.VerifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP verified successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_TokenResponse'
+      summary: Verify OTP
+      tags:
+      - auth
+  /comic-coin:
+    get:
+      consumes:
+      - application/json
+      description: Get the current user's comic coin balance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Comic coin balance retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_GetComicCoinResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get Comic Coin Balance
+      tags:
+      - comic-coins
+  /comic-coin/increment:
+    post:
+      consumes:
+      - application/json
+      description: Increment coin count for the current user
+      parameters:
+      - description: Type of increment (vote or other)
+        in: query
+        name: type
+        type: string
+      - description: Genre of the comic
+        in: query
+        name: genre
+        type: string
+      - description: Language of the comic
+        in: query
+        name: language
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully incremented coin count
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Increment Comic Coins
+      tags:
+      - comic-coins
+  /dsr/requests:
+    post:
+      consumes:
+      - application/json
+      description: Called by OneTrust's privacy-portal automation to delete/anonymize,
+        update, or export a user's data, matched by phone number.
+      parameters:
+      - description: DSR request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.DSRRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: request_id and status in the data field
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Fulfill a Data Subject Rights request
+      tags:
+      - DSR
+  /gcs/signed-url:
+    get:
+      consumes:
+      - application/json
+      description: Returns a time-limited signed URL for the given GCS object key.
+        Default expiry is 24 hours.
+      parameters:
+      - description: GCS object path (e.g. UGCImages/UGC_detail_thumb.png)
+        in: query
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Signed URL in url field
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid or missing key
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to generate signed URL
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get signed URL for GCS object
+      tags:
+      - gcs
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Returns a simple OK message to indicate the service is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      summary: Health check endpoint
+      tags:
+      - health
+  /joke/activate-consumption:
+    patch:
+      consumes:
+      - application/json
+      description: Activate a joke consumption record by setting is_active to true
+      parameters:
+      - description: Activate joke consumption
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ActivateJokeConsumptionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Joke consumption activated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Activate joke consumption
+      tags:
+      - Joke
+  /joke/change-ugc-status:
+    post:
+      consumes:
+      - application/json
+      description: Change UGC Status
+      parameters:
+      - description: Change UGC Status
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ChangeUGCStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UGC status changed successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Change UGC Status
+      tags:
+      - Joke
+  /joke/jokes:
+    get:
+      consumes:
+      - application/json
+      description: Get jokes
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Selected joke ID
+        in: query
+        name: selected_joke
+        type: string
+      - description: Preferred jokes IDs
+        in: query
+        name: preferred_jokes
+        type: string
+      - description: Language ID
+        in: query
+        name: language
+        required: true
+        type: integer
+      - description: Type
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Joke
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_JokeResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get jokes
+      tags:
+      - Joke
+  /joke/plag/change-status:
+    post:
+      consumes:
+      - application/json
+      description: Change the status of a plagiarized content
+      parameters:
+      - description: Change Plagiarized Info Status Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ChangePlagiarizedInfoStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Plagiarized Info Response
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Change Plagiarized Info Status
+      tags:
+      - Joke
+  /joke/reel-reaction:
+    post:
+      consumes:
+      - application/json
+      description: Add user reel reaction
+      parameters:
+      - description: Add user reel reaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AddUserReelReactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reaction added successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Add user reel reaction
+      tags:
+      - Joke
+  /joke/spicy-tray:
+    get:
+      consumes:
+      - application/json
+      description: Get spicy tray jokes
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Language ID
+        in: query
+        name: language
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Joke
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_JokeResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get spicy tray jokes
+      tags:
+      - Joke
+  /joke/surprise-me:
+    get:
+      consumes:
+      - application/json
+      description: Get a joke from the Gluedin API
+      parameters:
+      - description: Genre ID
+        in: query
+        name: genre
+        type: integer
+      - description: Language ID
+        in: query
+        name: language
+        type: integer
+      - description: Exclude joke IDs
+        in: query
+        name: exclude
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Joke
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_JokeResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get surprise me jokes (Limit 3 per day)
+      tags:
+      - Joke
+  /joke/ugc/assessment:
+    post:
+      consumes:
+      - application/json
+      description: Get UGC content for manual assessment with filters for date range,
+        language, genre, and source
+      parameters:
+      - description: Assessment request with filters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UGCAssessmentRequest'
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Items per page (default: 10)'
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UGC assessment content with pagination" {
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get UGC content for assessment
+      tags:
+      - Joke
+  /joke/ugc/content-artist:
+    post:
+      consumes:
+      - application/json
+      description: Get UGC Content Artist
+      parameters:
+      - description: UGC IDs
+        in: body
+        name: ids
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UGCContentByIDsDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UGC Content Artist
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_UGCContentArtistDTO'
+      security:
+      - BearerAuth: []
+      summary: Get UGC Content Artist
+      tags:
+      - Joke
+  /joke/ugc/content-by-ids:
+    post:
+      consumes:
+      - application/json
+      description: Get UGC Content
+      parameters:
+      - description: UGC IDs
+        in: body
+        name: ids
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UGCContentByIDsDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UGC Content
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_UGCContentByIDsResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get UGC Content
+      tags:
+      - Joke
+  /joke/ugc/plagiarize_content:
+    post:
+      consumes:
+      - application/json
+      description: Create or update plagiarized information for a UGC asset
+      parameters:
+      - description: Plagiarized Info Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.PlagiarizedInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Plagiarized Info Response
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_PlagiarizedInfoResponse'
+      security:
+      - BearerAuth: []
+      summary: Create or Update Plagiarized Info
+      tags:
+      - Joke
+  /joke/ugc/profile-content:
+    get:
+      consumes:
+      - application/json
+      description: Get Profile UGC Content
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UGC Content
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_UGCContentResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get Profile UGC Content
+      tags:
+      - Joke
+  /joke/ugc/submit:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Submit UGC Jokes
+      parameters:
+      - enum:
+        - Image
+        - Text
+        - Audio
+        - Video
+        in: formData
+        name: format
+        required: true
+        type: string
+      - in: formData
+        name: joke_genre_id
+        type: integer
+      - in: formData
+        name: language_id
+        required: true
+        type: integer
+      - in: formData
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Joke
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Submit UGC Jokes
+      tags:
+      - Joke
+  /leaderboard:
+    get:
+      consumes:
+      - application/json
+      description: Get the top users for the leaderboard, with an optional date filter
+      parameters:
+      - description: Date in MM/DD/YYYY format
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Leaderboard retrieved successfully
+          schema:
+            $ref: '#/definitions/dtos.LeaderboardResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get Leaderboard
+      tags:
+      - leaderboard
+  /meme-generator/generate:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Process and generate a meme with text overlay. Returns a URL to
+        the processed image. Backdrop and logo are loaded from static assets. Text
+        is limited to 40 characters.
+      parameters:
+      - description: Meme GIF or sticker (required unless meme_url is set)
+        in: formData
+        name: meme
+        type: file
+      - description: URL of an already-hosted template (Giphy CDN or our GCS bucket)
+          to fetch server-side instead of uploading the file
+        in: formData
+        name: meme_url
+        type: string
+      - description: Top text overlay (max 40 characters)
+        in: formData
+        name: top_text
+        type: string
+      - description: Bottom text overlay (max 40 characters)
+        in: formData
+        name: bottom_text
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.MemeGeneratorResponse'
+      security:
+      - BearerAuth: []
+      summary: Generate Meme
+      tags:
+      - Meme Generator
+  /meme-generator/generate-stream:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Process and generate a meme with text overlay. Returns the image
+        directly. Backdrop and logo are loaded from static assets. Text is limited
+        to 40 characters.
+      parameters:
+      - description: Meme GIF or sticker (required unless meme_url is set)
+        in: formData
+        name: meme
+        type: file
+      - description: URL of an already-hosted template (Giphy CDN or our GCS bucket)
+          to fetch server-side instead of uploading the file
+        in: formData
+        name: meme_url
+        type: string
+      - description: Top text overlay (max 40 characters)
+        in: formData
+        name: top_text
+        type: string
+      - description: Bottom text overlay (max 40 characters)
+        in: formData
+        name: bottom_text
+        type: string
+      produces:
+      - image/png
+      - image/gif
+      responses:
+        "200":
+          description: Processed image
+          schema:
+            type: file
+      security:
+      - BearerAuth: []
+      summary: Generate Meme Stream
+      tags:
+      - Meme Generator
+  /memes:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Validate inputs, upload to GCS, persist as PENDING
+      parameters:
+      - description: Language ID
+        in: formData
+        name: language_id
+        required: true
+        type: integer
+      - description: Template ID
+        in: formData
+        name: template_id
+        required: true
+        type: string
+      - description: Top Text
+        in: formData
+        name: text1
+        type: string
+      - description: Bottom Text
+        in: formData
+        name: text2
+        type: string
+      - description: Meme asset
+        in: formData
+        name: asset
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.MemeSubmitResponseData'
+      security:
+      - BearerAuth: []
+      summary: Submit Meme
+      tags:
+      - Memes
+  /memes/{meme_id}:
+    get:
+      consumes:
+      - application/json
+      description: Public detail for sharing; includes reactions
+      parameters:
+      - description: Meme ID
+        in: path
+        name: meme_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.MemeDetailResponse'
+      security:
+      - BearerAuth: []
+      summary: Fetch Meme Detail
+      tags:
+      - Memes
+  /memes/{meme_id}/view:
+    post:
+      consumes:
+      - application/json
+      description: Increment view count for a meme
+      parameters:
+      - description: Meme ID
+        in: path
+        name: meme_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.MemeIncrementViewResponse'
+      security:
+      - BearerAuth: []
+      summary: Increment View Count
+      tags:
+      - Memes
+  /memes/feed:
+    get:
+      consumes:
+      - application/json
+      description: Paginated approved memes (recency + reaction score); optional filters
+      parameters:
+      - description: Language ID
+        in: query
+        name: language
+        type: integer
+      - description: Search
+        in: query
+        name: q
+        type: string
+      - default: 15
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Cursor
+        in: query
+        name: cursor
+        type: string
+      - description: Sort by most viewed (trending)
+        in: query
+        name: trending
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.MemeFeedResponse'
+      security:
+      - BearerAuth: []
+      summary: Fetch Feed
+      tags:
+      - Memes
+  /memes/react/{meme_id}:
+    post:
+      consumes:
+      - application/json
+      description: Enforce unique reaction, award points
+      parameters:
+      - description: Meme ID
+        in: path
+        name: meme_id
+        required: true
+        type: string
+      - description: Reaction payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MemeReactRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.IncrementCoinCountResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: React on Meme
+      tags:
+      - Memes
+  /memes/user:
+    get:
+      consumes:
+      - application/json
+      description: Fetch paginated memes for authenticated user with optional status
+        filter
+      parameters:
+      - description: Meme status filter
+        in: query
+        name: status
+        type: string
+      - default: 15
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Cursor
+        in: query
+        name: cursor
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserMemesResponse'
+      security:
+      - BearerAuth: []
+      summary: Get User Memes
+      tags:
+      - Memes
+  /memes/vote:
+    post:
+      consumes:
+      - application/json
+      description: Enforce unique vote, award points
+      parameters:
+      - description: Vote payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MemeVoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.IncrementCoinCountResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Vote on Meme
+      tags:
+      - Memes
+  /mix-code/redeem:
+    post:
+      consumes:
+      - application/json
+      description: Redeem a mix code to get comic coins
+      parameters:
+      - description: Mix code to redeem
+        in: query
+        name: mix_code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mix code redeemed successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Redeem a mix code
+      tags:
+      - mix code
+  /notifications:
+    get:
+      consumes:
+      - application/json
+      description: Get notifications
+      parameters:
+      - description: Page number
+        in: query
+        name: page_number
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_NotificationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get notifications
+      tags:
+      - Notifications
+  /notifications/broadcast:
+    post:
+      consumes:
+      - application/json
+      description: Broadcast a push notification to every active FCM device token
+      parameters:
+      - description: Broadcast notification request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.BroadcastNotificationDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Broadcast notification
+      tags:
+      - Notifications
+  /notifications/broadcast-contest:
+    post:
+      consumes:
+      - application/json
+      description: Broadcasts a contest launch or deadline-reminder announcement to
+        all active users. Deduplicated per (contest_id, announcement_type) — the same
+        contest can only get one launch and one reminder broadcast, ever.
+      parameters:
+      - description: Announcement content
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ContestAnnouncementDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Broadcast run summary
+          schema:
+            $ref: '#/definitions/dtos.NotificationSendResult'
+        "409":
+          description: This contest/announcement_type has already been broadcast
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Contest announcement broadcast
+      tags:
+      - Notifications
+  /notifications/count:
+    get:
+      consumes:
+      - application/json
+      description: Get notification count
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_NotificationCountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get notification count
+      tags:
+      - Notifications
+  /notifications/mark-as-read:
+    post:
+      consumes:
+      - application/json
+      description: Mark as read
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Mark as read
+      tags:
+      - Notifications
+  /notifications/profile-completion:
+    post:
+      consumes:
+      - application/json
+      description: Sends a coin-reward-attached "complete your profile" push to every
+        eligible user (still incomplete, not sent within the weekly cooldown, re-checked
+        at send time)
+      parameters:
+      - description: Campaign content
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ProfileCompletionCampaignDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Campaign run summary
+          schema:
+            $ref: '#/definitions/dtos.NotificationSendResult'
+      security:
+      - ApiKeyAuth: []
+      summary: Ops-triggered profile completion bulk campaign
+      tags:
+      - Notifications
+  /notifications/register-device:
+    post:
+      consumes:
+      - application/json
+      description: Register a device for push notifications
+      parameters:
+      - description: Device token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RegisterDeviceDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Register a device for push notifications
+      tags:
+      - Notifications
+  /notifications/send-to-phone:
+    post:
+      consumes:
+      - application/json
+      description: Send a push notification to a specific user by their phone number
+      parameters:
+      - description: Phone notification request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.PhoneNotificationDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Send notification by phone number
+      tags:
+      - Notifications
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Get the user's profile information including rank and balance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_ProfileResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get Profile
+      tags:
+      - profile
+    put:
+      consumes:
+      - application/json
+      description: Edit the user's profile information
+      parameters:
+      - description: Edit Profile Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.EditProfileRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile updated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-entities_User'
+      security:
+      - BearerAuth: []
+      summary: Edit Profile
+      tags:
+      - profile
+  /profile/address:
+    get:
+      consumes:
+      - application/json
+      description: Get all addresses for the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Addresses retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_AddressResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get Addresses
+      tags:
+      - profile
+    post:
+      consumes:
+      - application/json
+      description: Add a new address for the user
+      parameters:
+      - description: Add Address Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AddressRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Address added successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_AddressResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Add Address
+      tags:
+      - profile
+  /profile/address/{addressId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing address for the user
+      parameters:
+      - description: Address ID
+        in: path
+        name: addressId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Address deleted successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Delete Address
+      tags:
+      - profile
+    put:
+      consumes:
+      - application/json
+      description: Edit an existing address for the user
+      parameters:
+      - description: Address ID
+        in: path
+        name: addressId
+        required: true
+        type: string
+      - description: Edit Address Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AddressRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Address updated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_AddressResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Edit Address
+      tags:
+      - profile
+  /profile/change-chat-language:
+    post:
+      consumes:
+      - application/json
+      description: Change the user's chat language
+      parameters:
+      - description: Language ID
+        in: query
+        name: languageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last Language Selection updated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Change Chat Language
+      tags:
+      - profile
+  /profile/comic-coin-pop-up:
+    patch:
+      consumes:
+      - application/json
+      description: Update the user's profile comic coin pop up
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile comic coin pop up updated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Update Profile Comic Coin Pop Up
+      tags:
+      - profile
+  /profile/questions:
+    get:
+      consumes:
+      - application/json
+      description: Get all active questions with user's answers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Questions retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_QuestionResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get Questions
+      tags:
+      - profile
+    post:
+      consumes:
+      - application/json
+      description: Submit answers to multiple questions
+      parameters:
+      - description: Answer Questions Request
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/dtos.AnswerQuestionsRequestDTO'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Answers submitted successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Answer Questions
+      tags:
+      - profile
+  /profile/questions/create:
+    post:
+      consumes:
+      - application/json
+      description: Create or update questions and options
+      parameters:
+      - description: Create Questions Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateQuestionsRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Questions created successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Create Questions
+      tags:
+      - profile
+  /profile/questions/text:
+    post:
+      consumes:
+      - application/json
+      description: Get a question by its text and language ID
+      parameters:
+      - description: Get Question By Text Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.GetQuestionByTextRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Question retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_QuestionResponseDTO'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "404":
+          description: Question not found
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Get Question By Text
+      tags:
+      - profile
+  /profiling-questions/check-modal/{question_id}:
+    get:
+      consumes:
+      - application/json
+      description: Check if the profiling question modal should be shown for a specific
+        question
+      parameters:
+      - description: Question ID
+        in: path
+        name: question_id
+        required: true
+        type: integer
+      - description: Question Number
+        in: query
+        name: question_number
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Modal status
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_ProfilingQuestionModalResponseDTO'
+        "400":
+          description: Invalid question_id or question_number
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "401":
+          description: User not authenticated
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "404":
+          description: Question not found
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Check Profiling Question Modal
+      tags:
+      - profiling-questions
+  /profiling-questions/last-viewed/{question_id}/{question_number}:
+    put:
+      consumes:
+      - application/json
+      description: Update the last viewed timestamp for a profiling question
+      parameters:
+      - description: Question ID
+        in: path
+        name: question_id
+        required: true
+        type: integer
+      - description: Question Number
+        in: path
+        name: question_number
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last viewed updated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Invalid question_id or question_number
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "401":
+          description: User not authenticated
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "404":
+          description: Question not found
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Update Profiling Question Last Viewed
+      tags:
+      - profiling-questions
+  /profiling-questions/submit:
+    post:
+      consumes:
+      - application/json
+      description: Submit answers to profiling questions
+      parameters:
+      - description: Answer Questions Request
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/dtos.AnswerQuestionsRequestDTO'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Answers submitted successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Invalid request body or missing required fields
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "401":
+          description: User not authenticated
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "404":
+          description: Question or option not found
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Submit Profiling Question Answer
+      tags:
+      - profiling-questions
+  /reference-data/formats:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of joke submission formats (text, image, audio, video)
+        with icons
+      parameters:
+      - description: Search by value or title
+        in: query
+        name: search
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by active status
+        in: query
+        name: is_active
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Joke formats retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_JokeFormatPaginatedResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all joke formats
+      tags:
+      - Reference Data
+  /reference-data/genres:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of available joke genres with pagination and filtering
+      parameters:
+      - description: Search by genre name
+        in: query
+        name: search
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by active status
+        in: query
+        name: is_active
+        type: boolean
+      - description: Filter by language ID
+        in: query
+        name: language_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Genres retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_GenrePaginatedResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all genres
+      tags:
+      - Reference Data
+  /reference-data/genres/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific genre by its ID
+      parameters:
+      - description: Genre ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Genre retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_JokeGenreResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Get genre by ID
+      tags:
+      - Reference Data
+  /reference-data/languages:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of available languages with pagination and filtering
+      parameters:
+      - description: Search by name or language key
+        in: query
+        name: search
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by active status
+        in: query
+        name: is_active
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Languages retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_LanguagePaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Get all languages
+      tags:
+      - Reference Data
+  /reference-data/languages/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific language by its ID
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Language retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_LanguageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Get language by ID
+      tags:
+      - Reference Data
+  /referral:
+    post:
+      consumes:
+      - application/json
+      description: Generate a new referral code for a user to share
+      parameters:
+      - description: Generate referral request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.GenerateReferralRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referral generated successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_ReferralResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Generate a new referral code
+      tags:
+      - referral
+  /referral/invitees:
+    get:
+      consumes:
+      - application/json
+      description: Get all referrals created by the user
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referrals retrieved successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-dtos_ReferralListResponse'
+        "400":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Get all user referrals
+      tags:
+      - referral
+  /referral/send-again:
+    post:
+      consumes:
+      - application/json
+      description: Resend an existing referral code
+      parameters:
+      - description: Send referral again request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.SendReferralAgainRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referral code sent successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Send referral code again
+      tags:
+      - referral
+  /referral/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify and accept a referral code
+      parameters:
+      - description: Verify referral request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.VerifyReferralRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Referral code verified successfully
+          schema:
+            $ref: '#/definitions/utils.ResponseType-string'
+      security:
+      - BearerAuth: []
+      summary: Verify referral code
+      tags:
+      - referral
+  /templates/autocomplete:
+    get:
+      consumes:
+      - application/json
+      description: Get template autocomplete suggestions based on query
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        type: string
+      - default: 25
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - default: gifs
+        description: Template type (gifs, stickers, or all)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Template autocomplete suggestions
+          schema:
+            items:
+              $ref: '#/definitions/dtos.GiphyAutocompleteItem'
+            type: array
+      summary: Get template autocomplete suggestions
+      tags:
+      - Templates
+  /templates/search:
+    get:
+      consumes:
+      - application/json
+      description: Search templates with filters
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        type: string
+      - default: 25
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - description: Rating filter
+        in: query
+        name: rating
+        type: string
+      - description: Language filter
+        in: query
+        name: lang
+        type: string
+      - description: Bundle filter
+        in: query
+        name: bundle
+        type: string
+      - default: gifs
+        description: Template type (gifs, stickers, or all)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Search results
+          schema:
+            items:
+              $ref: '#/definitions/dtos.GiphyTemplate'
+            type: array
+      summary: Search templates
+      tags:
+      - Templates
+  /templates/trending:
+    get:
+      consumes:
+      - application/json
+      description: Get trending templates with filters
+      parameters:
+      - default: 25
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - description: Rating filter
+        in: query
+        name: rating
+        type: string
+      - description: Bundle filter
+        in: query
+        name: bundle
+        type: string
+      - default: gifs
+        description: Template type (gifs, stickers, or all)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Trending templates
+          schema:
+            items:
+              $ref: '#/definitions/dtos.GiphyTemplate'
+            type: array
+      summary: Get trending templates
+      tags:
+      - Templates
+  /voucher/info:
+    get:
+      consumes:
+      - application/json
+      description: Get voucher info
+      parameters:
+      - description: Language ID
+        in: query
+        name: language_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voucher info
+          schema:
+            $ref: '#/definitions/utils.ResponseType-array_dtos_VoucherInfoDTO'
+      security:
+      - BearerAuth: []
+      summary: Get voucher info
+      tags:
+      - Voucher
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

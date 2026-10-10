@@ -1,0 +1,85 @@
+substitutions:
+  _REGION: asia-south1
+  _PROJECT_ID: ai0015455-sfa-prod
+  _REPO_NAME: tccc-sfa-prod-cloud-build-repo
+  _MAIN_SERVICE: tccc-sfa-prod-cloudrun-main-backend
+
+steps:
+  # Step 1: Pull existing image for cache (ignore errors if it doesn't exist)
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker pull ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest || exit 0']
+    id: 'pull-cache'
+
+  # Step 2: Build Docker image with caching enabled
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-f',
+        'Dockerfile.dev',
+        '-t',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA',
+        '-t',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest',
+        '--cache-from',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest',
+        '.'
+      ]
+    id: 'build-image'
+    waitFor: ['pull-cache']
+
+  # Step 3: Push SHA-tagged image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA'
+      ]
+    id: 'push-sha'
+    waitFor: ['build-image']
+
+  # Step 4: Push latest tag image (for caching and convenience)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest'
+      ]
+    id: 'push-latest'
+    waitFor: ['build-image']
+
+  # Step 5: Deploy to Cloud Run with secrets and settings.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run',
+        'deploy',
+        '${_MAIN_SERVICE}',
+        '--image=${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA',
+        '--region=${_REGION}',
+        '--platform=managed',
+        '--execution-environment=gen2',
+        '--vpc-egress=all',
+        '--min-instances=1',
+        '--max-instances=3',
+        '--allow-unauthenticated',
+        '--cpu=8',
+        '--memory=8Gi',
+        '--service-account=tccc-sfa-prod-cloudrun-sa@${_PROJECT_ID}.iam.gserviceaccount.com',
+        '--set-secrets=APP_ENV=APP_ENV:latest,INFOBIP_BASE_URL=INFOBIP_BASE_URL:latest,INFOBIP_API_KEY=INFOBIP_API_KEY:latest,INFOBIP_MEDIA_API_KEY=INFOBIP_MEDIA_API_KEY:latest,JWT_SECRET_KEY=JWT_SECRET_KEY:latest,JWT_ACCESS_TOKEN_EXPIRY=JWT_ACCESS_TOKEN_EXPIRY:latest,JWT_REFRESH_TOKEN_EXPIRY=JWT_REFRESH_TOKEN_EXPIRY:latest,JWT_TEMP_TOKEN_EXPIRY=JWT_TEMP_TOKEN_EXPIRY:latest,USE_SSH=USE_SSH:latest,DB_HOST=DB_HOST:latest,DB_PORT=DB_PORT:latest,DB_USER=DB_USER:latest,DB_PASSWORD=DB_PASSWORD:latest,DB_NAME=DB_NAME:latest,DB_SSL_MODE=DB_SSL_MODE:latest,GLUEDIN_BASE_URL=GLUEDIN_BASE_URL:latest,GLUEDIN_UGC_ENDPOINT=GLUEDIN_UGC_ENDPOINT:latest,GLUEDIN_API_KEY=GLUEDIN_API_KEY:latest,GLUEDIN_PROJECT_ID=GLUEDIN_PROJECT_ID:latest,CHATBOT_GLUEDIN_USER_ID=CHATBOT_GLUEDIN_USER_ID:latest,MIXCODE_BASE_URL=MIXCODE_BASE_URL:latest,MIXCODE_PROGRAM_ID=MIXCODE_PROGRAM_ID:latest,MIXCODE_PROGRAM_SECRET=MIXCODE_PROGRAM_SECRET:latest,GOOGLE_PUBSUB_PROJECT_ID=GOOGLE_PUBSUB_PROJECT_ID:latest,GOOGLE_PUBSUB_SUBSCRIPTION_ID=GOOGLE_PUBSUB_SUBSCRIPTION_ID:latest,GOOGLE_PUBSUB_TOPIC_ID=GOOGLE_PUBSUB_TOPIC_ID:latest,X_API_KEY=X_API_KEY:latest,GCP_BUCKET_NAME=GCP_BUCKET_NAME:latest,GCP_PROJECT_ID=GCP_PROJECT_ID:latest,GCP_URL=GCP_URL:latest,API_KEY=API_KEY:latest,CDP_BASE_URL=CDP_BASE_URL:latest,CDP_API_KEY=CDP_API_KEY:latest,CDP_CLIENT_ID=CDP_CLIENT_ID:latest,CDS_DATAMART_BASE_URL=CDS_DATAMART_BASE_URL:latest,CDS_HASHED_KOCID_BASE_URL=CDS_HASHED_KOCID_BASE_URL:latest,CDS_API_KEY=CDS_API_KEY:latest,CDS_CLIENT_ID=CDS_CLIENT_ID:latest,CDS_TIMEOUT=CDS_TIMEOUT:latest'
+      ]
+    id: 'deploy-cloudrun'
+    waitFor: ['push-sha', 'push-latest']
+
+images:
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest'
+
+timeout: 1800s
+options:
+  logging: CLOUD_LOGGING_ONLY
+  workerPool: projects/ai0015455-sfa-prod/locations/asia-south1/workerPools/tccc-sfa-prod-private-workerpool
+  env:
+    - 'DOCKER_BUILDKIT=0'

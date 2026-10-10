@@ -1,0 +1,25 @@
+title = "jiab-be gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Confirmed false positives / non-issues, reviewed 2026-10-09"
+paths = [
+  # Local-only, git-ignored files (.gitignore lines: .env, IL-Stage-JIAB-pem.pem,
+  # ssh-key.pem). Not tracked by git - confirmed via `git ls-files`. These exist
+  # on the scanning workstation only and are never part of the repository.
+  '''^\.env$''',
+  '''^IL-Stage-JIAB-pem\.pem$''',
+  '''^ssh-key\.pem$''',
+
+  # Vendored, minified Strapi admin UI build output. gitleaks' generic-api-key
+  # entropy rule matches on minified JS/CSS chunk-hash filenames and bundled
+  # third-party code, not actual credentials.
+  '''^strapi/dist/build/.*\.js$''',
+
+  # Template file for local dev setup: every field is a documented placeholder
+  # (dummy project ID, sequential-alphabet key ID, instructional private_key
+  # string), not a real Firebase credential.
+  '''^firebase-service-account\.example\.json$''',
+]

@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "testing_strapi_deploys",
+  "info": {
+    "singularName": "testing-strapi-deploy",
+    "pluralName": "testing-strapi-deploys",
+    "displayName": "testing_strapi_deploy"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "testing_deploy_field": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,84 @@
+substitutions:
+  _REGION: asia-south1
+  _PROJECT_ID: ai0015455-sfa-test
+  _REPO_NAME: tccc-sfa-test-cloud-build-repo
+  _MAIN_SERVICE: tccc-sfa-test-cloudrun-strapi-cms
+
+steps:
+  # Step 1: Pull existing image for cache (ignore errors if it doesn't exist)
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker pull ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest || exit 0']
+    id: 'pull-cache'
+
+  # Step 2: Build Docker image with caching enabled
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-f',
+        'Dockerfile.strapi.dev',
+        '-t',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA',
+        '-t',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest',
+        '--cache-from',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest',
+        '.'
+      ]
+    id: 'build-image'
+    waitFor: ['pull-cache']
+
+  # Step 3: Push SHA-tagged image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA'
+      ]
+    id: 'push-sha'
+    waitFor: ['build-image']
+
+  # Step 4: Push latest tag image (for caching and convenience)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest'
+      ]
+    id: 'push-latest'
+    waitFor: ['build-image']
+
+  # Step 5: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run',
+        'deploy',
+        '${_MAIN_SERVICE}',
+        '--image=${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA',
+        '--region=${_REGION}',
+        '--platform=managed',
+        '--execution-environment=gen2',
+        '--vpc-egress=all',
+        '--min-instances=1',
+        '--max-instances=3',
+        '--allow-unauthenticated',
+        '--cpu=4',
+        '--memory=2Gi',
+        '--service-account=tccc-sfa-test-cloudrun-sa@${_PROJECT_ID}.iam.gserviceaccount.com',
+        '--set-secrets=DATABASE_CLIENT=DATABASE_CLIENT:latest,DATABASE_HOST=DATABASE_HOST:latest,DATABASE_PORT=DATABASE_PORT:latest,DATABASE_NAME=DATABASE_NAME:latest,DATABASE_USERNAME=DATABASE_USERNAME:latest,DATABASE_PASSWORD=DATABASE_PASSWORD:latest,DATABASE_SSL=DATABASE_SSL:latest,DATABASE_FILENAME=DATABASE_FILENAME:latest,DATABASE_SSL_REJECT_UNAUTHORIZED=DATABASE_SSL_REJECT_UNAUTHORIZED:latest,APP_KEYS=APP_KEYS:latest,API_TOKEN_SALT=API_TOKEN_SALT:latest,ADMIN_JWT_SECRET=ADMIN_JWT_SECRET:latest,TRANSFER_TOKEN_SALT=TRANSFER_TOKEN_SALT:latest,ENCRYPTION_KEY=ENCRYPTION_KEY:latest,JWT_SECRET=JWT_SECRET:latest,HOST=HOST:latest,X_API_KEY=X_API_KEY:latest,GCP_BUCKET_NAME=GCP_BUCKET_NAME:latest,GCP_PROJECT_ID=GCP_PROJECT_ID:latest,GCP_URL=GCP_URL:latest'
+      ]
+    id: 'deploy-cloudrun'
+    waitFor: ['push-sha', 'push-latest']
+
+images:
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:$SHORT_SHA'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/${_MAIN_SERVICE}:latest'
+
+timeout: 1800s
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8

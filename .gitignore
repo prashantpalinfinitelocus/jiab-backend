@@ -1,0 +1,29 @@
+ENV_VARIABLES
+
+.env
+sonar_scanner_command.sh
+.scannerwork
+tmp
+main
+strapi/.strapi
+strapi/dist
+strapi/node_modules
+strapi/.env
+strapi/.strapi-updater.json
+IL-Stage-JIAB-pem.pem
+ssh-key.pem
+.idea/
+prod-migration/
+.DS_Store
+GLUEDIN_INTEGRATION_API_DOCS.md
+GLUEDIN_INTEGRATION_UPDATED_DOCS.md
+GluedIn Web Sdk Methods  (1).pdf
+GluedIn __ Sprite JIAB 2.0 Release Notes 23032024 (1).pdf
+WAF_BYPASS_README.md
+go.sarif
+javascript.sarif
+requirements-minimal.txt
+requirements.txt
+stackhawk.yml
+swagger-doc.json
+.DS_Store
