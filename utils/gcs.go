@@ -17,6 +17,9 @@ import (
 type GCSService interface {
 	UploadFile(ctx context.Context, file *multipart.FileHeader, path string) (string, string, error)
 	DeleteFile(ctx context.Context, fileURL string) error
+	// DeleteObject removes an object by its bucket-relative path (the form memes store), which DeleteFile
+	// cannot do because it needs the full https://storage.googleapis.com/<bucket>/<key> URL.
+	DeleteObject(ctx context.Context, objectPath string) error
 	UploadFileFromReader(ctx context.Context, file io.ReadCloser, folder string) (string, string, error)
 	// UploadFileFromReaderWithOptions is UploadFileFromReader but with an
 	// explicit object filename and content type, so the uploaded file opens
@@ -157,6 +160,16 @@ func (s *gcsService) DeleteFile(ctx context.Context, fileURL string) error {
 		return fmt.Errorf("failed to delete GCS object: %w", err)
 	}
 
+	return nil
+}
+
+func (s *gcsService) DeleteObject(ctx context.Context, objectPath string) error {
+	if objectPath == "" {
+		return fmt.Errorf("empty object path")
+	}
+	if err := s.client.Bucket(s.bucketName).Object(objectPath).Delete(ctx); err != nil {
+		return fmt.Errorf("failed to delete GCS object: %w", err)
+	}
 	return nil
 }
 

@@ -127,6 +127,7 @@ func (s *referralService) GetUserReferrals(ctx context.Context, userID string, f
 	if err != nil {
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.AbortTxn(tx)
 
 	referrals, total, err := s.referralRepo.GetUserReferrals(ctx, tx, userID, filter)

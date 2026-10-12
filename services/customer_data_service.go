@@ -109,6 +109,7 @@ func (s *customerDataService) syncKOCIDFromCDS(ctx context.Context, userID strin
 	if err != nil {
 		return "", err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.AbortTxn(tx)
 
 	kocidRecord := &entities.UserKOCID{

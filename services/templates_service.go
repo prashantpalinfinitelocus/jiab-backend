@@ -43,6 +43,7 @@ func (s *templatesService) Autocomplete(query string, limit, offset int, templat
 	if err != nil {
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.CommitTxn(tx)
 
 	genres, err := s.repo.DistinctGenres(ctx, tx)
@@ -84,6 +85,7 @@ func (s *templatesService) Search(query string, limit, offset int, rating, lang,
 	if err != nil {
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.CommitTxn(tx)
 
 	templates, err := s.repo.SearchTemplates(ctx, tx, strings.TrimSpace(query), limit, offset)
@@ -108,6 +110,7 @@ func (s *templatesService) Trending(limit, offset int, rating, bundle, templateT
 	if err != nil {
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.CommitTxn(tx)
 
 	templates, err := s.repo.RandomTemplates(ctx, tx, "", limit)

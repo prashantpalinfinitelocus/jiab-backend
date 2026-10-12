@@ -2,10 +2,9 @@ name: "CodeQL Analysis with Report and Commit"
 
 on:
   push:
-    branches: ["main"]
+    branches: ["feature/pub-sub"]
   pull_request:
-    branches: ["main"]
-  workflow_dispatch:
+    branches: ["feature/pub-sub"]
 
 jobs:
   analyze:

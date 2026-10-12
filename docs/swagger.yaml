@@ -500,6 +500,8 @@ definitions:
         $ref: '#/definitions/dtos.ReactionCounts'
       status:
         type: integer
+      userId:
+        type: string
       viewCount:
         type: integer
     type: object
@@ -519,6 +521,8 @@ definitions:
         $ref: '#/definitions/dtos.ReactionClick'
       reactionCounts:
         $ref: '#/definitions/dtos.ReactionCounts'
+      userId:
+        type: string
       username:
         type: string
       viewCount:
@@ -955,6 +959,8 @@ definitions:
         $ref: '#/definitions/dtos.ReactionCounts'
       status:
         type: integer
+      userId:
+        type: string
       username:
         type: string
       viewCount:
@@ -2452,6 +2458,42 @@ paths:
       tags:
       - Memes
   /memes/{meme_id}:
+    delete:
+      description: Permanently deletes one of the logged-in user's own memes, with
+        its captions, reactions, votes and view history. Only the owner can delete;
+        anyone else gets 403.
+      parameters:
+      - description: Meme ID
+        in: path
+        name: meme_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Meme deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Not logged in
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "403":
+          description: The meme belongs to someone else
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+        "404":
+          description: No such meme
+          schema:
+            $ref: '#/definitions/utils.ErrorType'
+      security:
+      - BearerAuth: []
+      summary: Delete My Meme
+      tags:
+      - Memes
     get:
       consumes:
       - application/json

@@ -28,15 +28,23 @@ import (
 )
 
 const (
-	FINAL_WIDTH        = 348
-	FINAL_HEIGHT       = 348
-	FONT_SIZE          = 18.67
-	TEXT_TOP_MARGIN    = 32
-	TEXT_BOTTOM_MARGIN = 32
-	WATERMARK_SCALE    = 0.15
-	WATERMARK_MARGIN   = 12
-	STROKE_WIDTH       = 0.78
-	TEXT_SIDE_PADDING  = 12
+	FINAL_WIDTH       = 348
+	FINAL_HEIGHT      = 348
+	FONT_SIZE         = 18.67
+	WATERMARK_SCALE   = 0.15
+	WATERMARK_MARGIN  = 12
+	STROKE_WIDTH      = 0.78
+	TEXT_SIDE_PADDING = 12
+
+	// Layout of the finished meme. The template sits in the middle and the text goes in
+	// separate bands above and below it, never over the picture - the same layout the
+	// editor preview uses. With the 348 px canvas these leave a 348 x 196 middle, which is
+	// exactly 16:9, the shape of the standard templates.
+	TOP_BAND_HEIGHT        = 56   // top caption, centred in the band
+	LOGO_OPACITY           = 0.25 // watermark strength, matches the preview
+	BOTTOM_BAND_HEIGHT     = 96   // bottom caption in its upper part, logo in the lower part
+	BOTTOM_TEXT_BOX_HEIGHT = 50   // the part of the bottom band that holds the caption
+	TEXT_MAX_LINES         = 2
 )
 
 type ImageProcessorConfig struct {
@@ -48,8 +56,10 @@ type ImageProcessorConfig struct {
 	StrokeWidth      float64
 	WatermarkScale   float64
 	WatermarkMargin  int
-	TextTopMargin    int
-	TextBottomMargin int
+	TopBandHeight    int
+	BottomBandHeight int
+	BottomTextBox    int
+	TextMaxLines     int
 	BackdropURL      string
 	LogoURL          string
 }
@@ -64,8 +74,10 @@ func DefaultImageProcessorConfig(backdropURL, logoURL string) *ImageProcessorCon
 		StrokeWidth:      STROKE_WIDTH,
 		WatermarkScale:   WATERMARK_SCALE,
 		WatermarkMargin:  WATERMARK_MARGIN,
-		TextTopMargin:    TEXT_TOP_MARGIN,
-		TextBottomMargin: TEXT_BOTTOM_MARGIN,
+		TopBandHeight:    TOP_BAND_HEIGHT,
+		BottomBandHeight: BOTTOM_BAND_HEIGHT,
+		BottomTextBox:    BOTTOM_TEXT_BOX_HEIGHT,
+		TextMaxLines:     TEXT_MAX_LINES,
 		BackdropURL:      backdropURL,
 		LogoURL:          logoURL,
 	}
@@ -424,32 +436,51 @@ func stackImagesVertically(images []image.Image) image.Image {
 	return canvas
 }
 
-func (p *ImageProcessor) composeFrame(memeImg, backdropImg, logoImg image.Image, topText, bottomText string) image.Image {
-	dc := gg.NewContext(p.config.Width, p.config.Height)
+// withOpacity returns a copy of img with its alpha scaled by opacity (0 to 1), keeping any transparency it already has.
+func withOpacity(img image.Image, opacity float64) image.Image {
+	b := img.Bounds()
+	out := image.NewNRGBA(b)
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			c := color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
+			c.A = uint8(math.Round(float64(c.A) * opacity))
+			out.SetNRGBA(x, y, c)
+		}
+	}
+	return out
+}
 
-	backdropResized := resize.Resize(uint(p.config.Width), uint(p.config.Height), backdropImg, resize.Lanczos3)
+func (p *ImageProcessor) composeFrame(memeImg, backdropImg, logoImg image.Image, topText, bottomText string) image.Image {
+	cfg := p.config
+	dc := gg.NewContext(cfg.Width, cfg.Height)
+
+	backdropResized := resize.Resize(uint(cfg.Width), uint(cfg.Height), backdropImg, resize.Lanczos3)
 	dc.DrawImage(backdropResized, 0, 0)
 
-	memeContained := p.containImage(memeImg, p.config.Width, p.config.Height)
-	offsetX := (p.config.Width - memeContained.Bounds().Dx()) / 2
-	offsetY := (p.config.Height - memeContained.Bounds().Dy()) / 2
+	// The template is fitted into the middle only, between the two text bands.
+	middleHeight := cfg.Height - cfg.TopBandHeight - cfg.BottomBandHeight
+	memeContained := p.containImage(memeImg, cfg.Width, middleHeight)
+	offsetX := (cfg.Width - memeContained.Bounds().Dx()) / 2
+	offsetY := cfg.TopBandHeight + (middleHeight-memeContained.Bounds().Dy())/2
 	dc.DrawImage(memeContained, offsetX, offsetY)
 
 	dc.SetFontFace(p.font)
-	dc.SetColor(p.config.TextColor)
+	dc.SetColor(cfg.TextColor)
 
 	if topText != "" {
-		p.drawWrappedTopText(dc, strings.ToUpper(topText))
+		p.drawTextInBand(dc, strings.ToUpper(topText), 0, cfg.TopBandHeight)
 	}
 
 	if bottomText != "" {
-		p.drawWrappedBottomText(dc, strings.ToUpper(bottomText))
+		// The caption uses the upper part of the bottom band; the logo keeps the lower part.
+		p.drawTextInBand(dc, strings.ToUpper(bottomText), cfg.Height-cfg.BottomBandHeight, cfg.BottomTextBox)
 	}
 
 	logoResized := p.resizeLogo(logoImg)
-	logoX := p.config.Width - logoResized.Bounds().Dx() - p.config.WatermarkMargin
-	logoY := p.config.Height - logoResized.Bounds().Dy() - p.config.WatermarkMargin
-	dc.DrawImage(logoResized, logoX, logoY)
+	logoX := cfg.Width - logoResized.Bounds().Dx() - cfg.WatermarkMargin
+	logoY := cfg.Height - logoResized.Bounds().Dy() - cfg.WatermarkMargin
+	// The logo is a watermark: 25% opacity, same as the preview.
+	dc.DrawImage(withOpacity(logoResized, LOGO_OPACITY), logoX, logoY)
 
 	return dc.Image()
 }
@@ -482,40 +513,27 @@ func (p *ImageProcessor) drawTextLineWithStroke(dc *gg.Context, text string, x, 
 	dc.DrawStringAnchored(text, x-0.25, y, 0.5, vAnchor)
 }
 
-func (p *ImageProcessor) drawWrappedTopText(dc *gg.Context, text string) {
+// drawTextInBand wraps text to the band's width and centres the block both ways inside the band
+// (bandTop to bandTop+bandHeight). At most TextMaxLines lines are drawn, so a caption can never spill
+// out of its band onto the picture.
+func (p *ImageProcessor) drawTextInBand(dc *gg.Context, text string, bandTop, bandHeight int) {
 	maxWidth := float64(p.config.Width - 2*TEXT_SIDE_PADDING)
 	lines := p.wrapText(dc, text, maxWidth)
-	// A real font's rendered glyph height (ascent + descent) typically runs
-	// well past its nominal "font size" - stacking lines at exactly 100% of
-	// that size crowds one line's descenders into the next line's ascenders,
-	// which read as the caption's letters running into each other. 1.2x is
-	// the standard typographic leading for this reason.
-	lineHeight := p.config.FontSize * 1.2
-	startY := float64(p.config.TextTopMargin)
-
-	x := float64(p.config.Width) / 2
-	y := startY
-	for _, line := range lines {
-		p.drawTextLineWithStroke(dc, line, x, y, 0.0)
-		y += lineHeight
+	if len(lines) > p.config.TextMaxLines {
+		lines = lines[:p.config.TextMaxLines]
 	}
-}
-
-func (p *ImageProcessor) drawWrappedBottomText(dc *gg.Context, text string) {
-	maxWidth := float64(p.config.Width - 2*TEXT_SIDE_PADDING)
-	lines := p.wrapText(dc, text, maxWidth)
 	// A real font's rendered glyph height (ascent + descent) typically runs
 	// well past its nominal "font size" - stacking lines at exactly 100% of
 	// that size crowds one line's descenders into the next line's ascenders,
 	// which read as the caption's letters running into each other. 1.2x is
 	// the standard typographic leading for this reason.
 	lineHeight := p.config.FontSize * 1.2
+	blockHeight := lineHeight * float64(len(lines))
+	firstCentre := float64(bandTop) + (float64(bandHeight)-blockHeight)/2 + lineHeight/2
+
 	x := float64(p.config.Width) / 2
-	// Anchor the block exactly p.config.TextBottomMargin from the bottom edge
-	y := float64(p.config.Height - p.config.TextBottomMargin)
-	for i := len(lines) - 1; i >= 0; i-- {
-		p.drawTextLineWithStroke(dc, lines[i], x, y, 1.0)
-		y -= lineHeight
+	for i, line := range lines {
+		p.drawTextLineWithStroke(dc, line, x, firstCentre+float64(i)*lineHeight, 0.5)
 	}
 }
 
@@ -673,7 +691,6 @@ func (p *ImageProcessor) ensureAssets(ctx context.Context) error {
 
 	return p.assetsErr
 }
-
 
 func EncodeImageToWriter(img image.Image, w io.Writer) error {
 	return png.Encode(w, img)

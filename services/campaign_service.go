@@ -104,6 +104,7 @@ func (s *campaignService) runIncompleteProfileCampaign(ctx context.Context, noti
 		if err != nil {
 			return result, err
 		}
+		defer s.txnManager.RollbackOnPanic(tx)
 		batch, err := s.userRepo.FindPageByConditions(ctx, tx, map[string]interface{}{
 			"is_active":           true,
 			"is_profile_complete": false,
@@ -151,6 +152,7 @@ func (s *campaignService) processIncompleteProfileBatch(ctx context.Context, bat
 		logrus.Errorf("Failed to start txn for batch lookups: %v", err)
 		return 0, 0, len(batch)
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	alreadySent, err := s.userNotificationRepo.FindUserIDsNotifiedWithinWindow(ctx, tx, ids, notificationType, window)
 	if err != nil {
@@ -200,6 +202,7 @@ func (s *campaignService) sendSingle(ctx context.Context, userID string, notific
 	if err != nil {
 		return err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	if reward != nil {
 		if _, err := s.comicCoinService.UpdateBalance(ctx, tx, userID, *reward); err != nil {
@@ -276,6 +279,7 @@ func (s *campaignService) SendContestAnnouncement(ctx context.Context, req dtos.
 	if err != nil {
 		return result, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	existing, err := s.contestBroadcastRepo.FindByContestAndType(ctx, tx, req.ContestID, req.AnnouncementType)
 	if err != nil {
 		s.txnManager.AbortTxn(tx)
@@ -297,6 +301,7 @@ func (s *campaignService) SendContestAnnouncement(ctx context.Context, req dtos.
 		if err != nil {
 			return result, err
 		}
+		defer s.txnManager.RollbackOnPanic(pageTx)
 		batch, err := s.userRepo.FindPageByConditions(ctx, pageTx, map[string]interface{}{
 			"is_active": true,
 		}, afterID, constants.CAMPAIGN_BATCH_SIZE)
@@ -321,6 +326,7 @@ func (s *campaignService) SendContestAnnouncement(ctx context.Context, req dtos.
 			if err != nil {
 				return err
 			}
+			defer s.txnManager.RollbackOnPanic(sendTx)
 			if err := s.notificationService.SendPushNotification(ctx, sendTx, constants.NOTIFICATION_CONTEST_ANNOUNCEMENT, userID, nil); err != nil {
 				s.txnManager.AbortTxn(sendTx)
 				return err
@@ -343,6 +349,7 @@ func (s *campaignService) SendContestAnnouncement(ctx context.Context, req dtos.
 	if err != nil {
 		return result, err
 	}
+	defer s.txnManager.RollbackOnPanic(logTx)
 	if err := s.contestBroadcastRepo.Create(ctx, logTx, &entities.ContestBroadcastLog{
 		ContestID:        req.ContestID,
 		AnnouncementType: req.AnnouncementType,

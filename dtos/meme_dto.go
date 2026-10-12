@@ -34,6 +34,7 @@ type ReactionClick struct {
 
 type MemeFeedItem struct {
 	ID             string         `json:"id"`
+	UserID         string         `json:"userId"`
 	AssetURL       string         `json:"assetUrl"`
 	Language       string         `json:"language"`
 	ViewCount      int            `json:"viewCount"`
@@ -51,6 +52,7 @@ type MemeFeedResponse struct {
 
 type MemeDetailResponse struct {
 	ID             string         `json:"id"`
+	UserID         string         `json:"userId"`
 	Status         int            `json:"status"`
 	AssetURL       string         `json:"assetUrl"`
 	Language       string         `json:"language"`
@@ -94,6 +96,7 @@ type UserMemesRequest struct {
 
 type UserMemesItem struct {
 	ID             string         `json:"id"`
+	UserID         string         `json:"userId"`
 	AssetURL       string         `json:"assetUrl"`
 	Language       string         `json:"language"`
 	Status         int            `json:"status"`

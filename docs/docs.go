@@ -1763,6 +1763,59 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permanently deletes one of the logged-in user's own memes, with its captions, reactions, votes and view history. Only the owner can delete; anyone else gets 403.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Memes"
+                ],
+                "summary": "Delete My Meme",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Meme ID",
+                        "name": "meme_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meme deleted",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorType"
+                        }
+                    },
+                    "403": {
+                        "description": "The meme belongs to someone else",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorType"
+                        }
+                    },
+                    "404": {
+                        "description": "No such meme",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrorType"
+                        }
+                    }
+                }
             }
         },
         "/memes/{meme_id}/view": {
@@ -4278,6 +4331,9 @@ const docTemplate = `{
                 "status": {
                     "type": "integer"
                 },
+                "userId": {
+                    "type": "string"
+                },
                 "viewCount": {
                     "type": "integer"
                 }
@@ -4306,6 +4362,9 @@ const docTemplate = `{
                 },
                 "reactionCounts": {
                     "$ref": "#/definitions/dtos.ReactionCounts"
+                },
+                "userId": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -4973,6 +5032,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                },
+                "userId": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"

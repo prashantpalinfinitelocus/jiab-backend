@@ -101,6 +101,7 @@ func (h *MemeHandler) Feed(c *gin.Context) {
 	for i, result := range results {
 		feedItems[i] = dtos.MemeFeedItem{
 			ID:        result.Meme.ID,
+			UserID:    result.Meme.UserID,
 			AssetURL:  result.AssetURL,
 			Language:  result.LanguageCode,
 			ViewCount: result.Meme.ViewCount,
@@ -166,6 +167,7 @@ func (h *MemeHandler) GetUserMemes(c *gin.Context) {
 	for i, result := range results {
 		memeItems[i] = dtos.UserMemesItem{
 			ID:        result.Meme.ID,
+			UserID:    result.Meme.UserID,
 			AssetURL:  result.AssetURL,
 			Language:  result.LanguageCode,
 			Status:    result.Meme.Status,
@@ -218,6 +220,7 @@ func (h *MemeHandler) Detail(c *gin.Context) {
 
 	detail := dtos.MemeDetailResponse{
 		ID:        result.Meme.ID,
+		UserID:    result.Meme.UserID,
 		Status:    result.Meme.Status,
 		AssetURL:  result.AssetURL,
 		Language:  result.LanguageCode,
@@ -320,4 +323,31 @@ func (h *MemeHandler) IncrementView(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, *resp)
+}
+
+// @Summary Delete My Meme
+// @Description Permanently deletes one of the logged-in user's own memes, with its captions, reactions, votes and view history. Only the owner can delete; anyone else gets 403.
+// @Tags Memes
+// @Produce json
+// @Security BearerAuth
+// @Param meme_id path string true "Meme ID"
+// @Success 200 {object} map[string]string "Meme deleted"
+// @Failure 401 {object} utils.ErrorType "Not logged in"
+// @Failure 403 {object} utils.ErrorType "The meme belongs to someone else"
+// @Failure 404 {object} utils.ErrorType "No such meme"
+// @Router /memes/{meme_id} [delete]
+func (h *MemeHandler) Delete(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.Error(errs.NewUnauthorizedError("User not authenticated", nil))
+		return
+	}
+	userID := user.(*entities.User).ID
+
+	if err := h.service.Delete(c, userID, c.Param("meme_id")); err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Meme deleted"})
 }

@@ -127,6 +127,10 @@ func (s *authService) VerifyOTP(ctx context.Context, mobileNumber string, otp st
 	// Verify OTP
 	isValid, err := s.otpLogsRepo.VerifyOTP(ctx, tx, mobileNumber, otp)
 	if err != nil {
+		// Release this connection before taking a second one for the attempt
+		// counter. Holding both at once lets enough concurrent failures each
+		// hold a connection while waiting for another, which deadlocks the pool.
+		s.txnManager.AbortTxn(tx)
 		var wg sync.WaitGroup
 		wg.Add(1)
 		go func() {
@@ -148,7 +152,6 @@ func (s *authService) VerifyOTP(ctx context.Context, mobileNumber string, otp st
 			logrus.Infof("Successfully incremented attempts for mobile number: %s in separate transaction", utils.SanitizeForLog(mobileNumber))
 		}()
 		wg.Wait()
-		s.txnManager.AbortTxn(tx)
 		return nil, err
 	}
 	if !isValid {
@@ -507,6 +510,7 @@ func (s *authService) WARegister(ctx context.Context, req dtos.WARegisterRequest
 		s.txnManager.AbortTxn(tx)
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	// Check if user already exists
 	existingUser, err := s.userRepo.FindByField(ctx, tx, "phone_number", req.PhoneNumber)

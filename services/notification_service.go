@@ -59,6 +59,7 @@ func (s *notificationService) RegisterDevice(ctx context.Context, userId string,
 	if err != nil {
 		return err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	now := time.Now()
 	token, err := s.fcmDeviceTokenRepo.FindByField(ctx, tx, "user_id", userId)
@@ -130,6 +131,7 @@ func (s *notificationService) GetUserNotifications(ctx context.Context, userId s
 	if err != nil {
 		return nil, 0, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	notifications, totalCount, err := s.notificationRepo.GetUserNotifications(ctx, tx, userId, filter)
 	if err != nil {
@@ -170,6 +172,7 @@ func (s *notificationService) GetNotificationCount(ctx context.Context, userId s
 	if err != nil {
 		return 0, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	notificationCount, err := s.notificationRepo.CountWithConditions(ctx, tx, map[string]interface{}{"user_id": userId, "is_read": false, "is_new": true})
 	if err != nil {
@@ -186,6 +189,7 @@ func (s *notificationService) MarkAsRead(ctx context.Context, userId string) err
 	if err != nil {
 		return err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	err = s.notificationRepo.MarkAsRead(ctx, tx, userId)
 	if err != nil {
@@ -347,6 +351,7 @@ func (s *notificationService) invalidateFailedTokens(ctx context.Context, respon
 		logrus.Errorf("Failed to start transaction to invalidate FCM tokens: %v", err)
 		return
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	rowsAffected, err := s.fcmDeviceTokenRepo.BatchInvalidateByDeviceTokens(ctx, tx, tokensToInvalidate)
 	if err != nil {
@@ -438,6 +443,7 @@ func (s *notificationService) GetTokensByDate(ctx context.Context, dateStr strin
 	if err != nil {
 		return dtos.GetTokensByDateResponseDTO{}, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	// Fetch tokens by date
 	tokens, err := s.fcmDeviceTokenRepo.FindByDate(ctx, tx, date)

@@ -779,6 +779,7 @@ func (s *jokeService) GetJokeGenres(ctx context.Context, userID string) ([]dtos.
 	if err != nil {
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.AbortTxn(tx)
 
 	result, err := s.jokeReferenceDataService.GetJokeGenres(ctx, tx, userID)

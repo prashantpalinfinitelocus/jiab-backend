@@ -14,6 +14,7 @@ import (
 	"github.com/Infinite-Locus-Product/coca_cola_backend/repository"
 	"github.com/Infinite-Locus-Product/coca_cola_backend/utils"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -43,6 +44,8 @@ type MemeService interface {
 	AdminApprove(ctx context.Context, memeID string, languageID *int, notes *string) (*dtos.ApproveMemeResponse, error)
 	AdminReject(ctx context.Context, memeID string, reason string) (*dtos.RejectMemeResponse, error)
 	GetUserMemes(ctx context.Context, userID string, status *int, limit int, cursor *string) ([]MemeFeedResult, *string, error)
+	// Delete permanently removes one of the caller's own memes. Anyone else gets a 403.
+	Delete(ctx context.Context, userID string, memeID string) error
 }
 
 type memeService struct {
@@ -242,7 +245,7 @@ func (s *memeService) Feed(ctx context.Context, userID string, languageID *int, 
 		var username *string
 		var avatarImage *string
 		if user, exists := userMap[meme.UserID]; exists && user != nil {
-			username = user.Name
+			username = utils.DisplayName(user.Name)
 			avatarImage = user.ProfilePicture
 		}
 
@@ -356,7 +359,7 @@ func (s *memeService) GetUserMemes(ctx context.Context, userID string, status *i
 		var username *string
 		var avatarImage *string
 		if user, exists := userMap[meme.UserID]; exists && user != nil {
-			username = user.Name
+			username = utils.DisplayName(user.Name)
 			avatarImage = user.ProfilePicture
 		}
 
@@ -732,6 +735,51 @@ func (s *memeService) getUserReactionClick(ctx context.Context, tx *gorm.DB, use
 }
 
 // getAssetURL converts the stored asset path to a GCS signed URL
+func (s *memeService) Delete(ctx context.Context, userID string, memeID string) error {
+	if userID == "" {
+		return errs.NewUnauthorizedError("User not authenticated", nil)
+	}
+	// An id that is not a UUID cannot exist; answering 404 here also keeps it from reaching the database.
+	if _, err := uuid.Parse(memeID); err != nil {
+		return errs.NewNotFoundError(MEME_NOT_FOUND_ERROR, nil)
+	}
+
+	tx, err := s.txnManager.StartTxn()
+	if err != nil {
+		return err
+	}
+	defer s.txnManager.RollbackOnPanic(tx)
+
+	meme, err := s.memeRepository.FindById(ctx, tx, memeID)
+	if err != nil {
+		s.txnManager.AbortTxn(tx)
+		return err
+	}
+	if meme == nil {
+		s.txnManager.AbortTxn(tx)
+		return errs.NewNotFoundError(MEME_NOT_FOUND_ERROR, nil)
+	}
+	if meme.UserID != userID {
+		s.txnManager.AbortTxn(tx)
+		return errs.NewForbiddenError("You can only delete your own memes", nil)
+	}
+
+	if err := s.memeRepository.DeleteWithDependents(ctx, tx, memeID); err != nil {
+		s.txnManager.AbortTxn(tx)
+		return err
+	}
+	s.txnManager.CommitTxn(tx)
+
+	// The row is already gone. Removing the stored file is housekeeping, so a failure there is logged
+	// and does not turn a successful delete into an error.
+	if meme.AssetURL != "" && !strings.HasPrefix(meme.AssetURL, "http") {
+		if err := s.gcsService.DeleteObject(ctx, meme.AssetURL); err != nil {
+			logrus.Warnf("meme %s deleted but its file could not be removed: %v", utils.SanitizeForLog(memeID), err)
+		}
+	}
+	return nil
+}
+
 func (s *memeService) getAssetURL(ctx context.Context, assetPath string) (string, error) {
 	if strings.HasPrefix(assetPath, "http") {
 		return assetPath, nil

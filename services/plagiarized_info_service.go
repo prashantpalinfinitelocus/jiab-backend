@@ -82,6 +82,7 @@ func (s *plagiarizedInfoService) RemovePlagiarizedUGC(ctx context.Context, req d
 		logrus.Error("error starting transaction", err)
 		return err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	plagiarizedInfo, err := s.plagiarizedInfoRepo.FindById(ctx, tx, req.PlagiarizedInfoID)
 	if err != nil {

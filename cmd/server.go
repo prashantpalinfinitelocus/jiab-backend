@@ -602,6 +602,7 @@ func setupRoutes() {
 		memesGroup.POST("/vote", memeHandler.Vote)
 		memesGroup.POST("/react/:meme_id", memeHandler.React)
 		memesGroup.POST("/view/:meme_id", memeHandler.IncrementView)
+		memesGroup.DELETE("/:meme_id", memeHandler.Delete)
 	}
 
 	/*------------------------------------------Meme Generator Routes ------------------------------------------*/

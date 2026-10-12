@@ -43,6 +43,7 @@ func (s *memeTemplateAdminService) BulkRegister(ctx context.Context, req dtos.Bu
 	if err != nil {
 		return dtos.BulkRegisterMemeTemplatesResponse{}, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 
 	if err := s.repo.CreateMany(ctx, tx, rows); err != nil {
 		s.txnManager.AbortTxn(tx)

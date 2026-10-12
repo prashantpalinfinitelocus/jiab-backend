@@ -1735,6 +1735,7 @@ func (s *userService) WAUserDetails(ctx context.Context, userID string) (*dtos.W
 	if err != nil {
 		return nil, err
 	}
+	defer s.txnManager.RollbackOnPanic(tx)
 	defer s.txnManager.AbortTxn(tx)
 
 	user, err := s.userRepo.FindById(ctx, tx, uuid.MustParse(userID))
