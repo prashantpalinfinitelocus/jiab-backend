@@ -429,12 +429,12 @@ func (s *gluedinService) ChangeUGCStatus(videoID string, status string) error {
 	response, err := s.gluedinClient.Post(fmt.Sprintf(constants.CHANGE_UGC_STATUS_ENDPOINT, s.gluedInUGCEndpoint), body, nil, false)
 	if err != nil {
 		logrus.Info("error changing ugc status to gluedin", err)
-		return errs.NewInternalServerError("error changing ugc status to gluedin", err)
+		return errs.NewBadGatewayError("Could not update the content status right now. Please try again.", err)
 	}
 
 	if response.StatusCode != http.StatusCreated {
 		logrus.Info("error changing ugc status to gluedin", response.StatusCode)
-		return errs.NewInternalServerError("error changing ugc status to gluedin", nil)
+		return errs.NewBadGatewayError("Could not update the content status right now. Please try again.", nil)
 	}
 
 	var responseBody map[string]interface{}

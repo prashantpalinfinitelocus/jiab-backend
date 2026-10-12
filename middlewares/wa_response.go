@@ -95,6 +95,7 @@ func handleWASuccessResponse(c *gin.Context, capture *responseCapture, statusCod
 				}
 			}
 		} else {
+			// nosemgrep: go.lang.security.deserialization.unsafe-deserialization-interface.go-unsafe-deserialization-interface -- generic response envelope: re-wraps this service's own handler output unchanged
 			var rawData interface{}
 			if err := json.Unmarshal(bodyBytes, &rawData); err == nil {
 				data = rawData

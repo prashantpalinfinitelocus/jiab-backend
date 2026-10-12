@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:22-alpine
  
 RUN apk add --no-cache python3 make g++ sqlite-dev
  
@@ -40,6 +40,10 @@ COPY ./strapi .
 RUN npm run build
  
 # Expose port
+
+# Run as the unprivileged node user; build output, uploads and .tmp must stay writable.
+RUN mkdir -p /srv/app/.tmp /srv/app/public/uploads && chown -R node:node /srv/app
+USER node
 
 EXPOSE 8080
  

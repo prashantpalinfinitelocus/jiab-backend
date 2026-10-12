@@ -1,5 +1,16 @@
 import path from 'path';
 
+// Resolve the SQLite file inside the project root only (guards against path traversal
+// via DATABASE_FILENAME such as "../../etc/x").
+const resolveSqliteFile = (name: string): string => {
+  const root = path.resolve(__dirname, '..', '..');
+  const resolved = path.resolve(root, name); // nosemgrep: path-join-resolve-traversal -- checked against root on the next line
+  if (resolved !== root && !resolved.startsWith(root + path.sep)) {
+    throw new Error('DATABASE_FILENAME must resolve inside the project directory');
+  }
+  return resolved;
+};
+
 export default ({ env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 
@@ -44,7 +55,7 @@ export default ({ env }) => {
     },
     sqlite: {
       connection: {
-        filename: path.join(__dirname, '..', '..', env('DATABASE_FILENAME', '.tmp/data.db')),
+        filename: resolveSqliteFile(env('DATABASE_FILENAME', '.tmp/data.db')),
       },
       useNullAsDefault: true,
     },

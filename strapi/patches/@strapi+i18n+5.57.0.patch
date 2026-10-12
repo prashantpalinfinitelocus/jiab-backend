@@ -1,0 +1,23 @@
+diff --git a/node_modules/@strapi/i18n/dist/server/constants/iso-locales.json.js b/node_modules/@strapi/i18n/dist/server/constants/iso-locales.json.js
+index 8264e91..36a0dbf 100644
+--- a/node_modules/@strapi/i18n/dist/server/constants/iso-locales.json.js
++++ b/node_modules/@strapi/i18n/dist/server/constants/iso-locales.json.js
+@@ -2508,6 +2508,18 @@ var isoLocales = [
+     {
+         code: "zu-ZA",
+         name: "Zulu (South Africa) (zu-ZA)"
++    },
++    {
++        code: "bho",
++        name: "Bhojpuri (bho)"
++    },
++    {
++        code: "mai",
++        name: "Maithili (mai)"
++    },
++    {
++        code: "tu",
++        name: "Tulu (tu)"
+     }
+ ];
+ 

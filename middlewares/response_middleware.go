@@ -88,6 +88,7 @@ func isSwaggerRoute(path string) bool {
 }
 
 func handleSuccessResponse(c *gin.Context, capture *responseCapture, statusCode int) {
+	// nosemgrep: go.lang.security.deserialization.unsafe-deserialization-interface.go-unsafe-deserialization-interface -- generic response envelope: handlers return arbitrary JSON bodies that are re-wrapped unchanged (own output, not external input)
 	var data interface{}
 	message := "Request successful"
 

@@ -142,6 +142,14 @@ func NewInternalServerError(message string, err error) *AppError {
 	return NewAppError(1003, message, 500, err)
 }
 
+// NewBadGatewayError is for a failure in a service we depend on, so it is not reported as our own 500.
+func NewBadGatewayError(message string, err error) *AppError {
+	if message == "" {
+		message = "A dependent service is unavailable. Please try again."
+	}
+	return NewAppError(1003, message, 502, err)
+}
+
 func NewValidationErrors(message string, err error) *AppError {
 	if message == "" {
 		message = "Validation failed."

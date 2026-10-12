@@ -18,6 +18,9 @@ COPY repos.py ./
 COPY controllers.py ./
 COPY routes.py ./
 
+RUN useradd --system --no-create-home --uid 10001 appuser && chown -R appuser /app
+USER appuser
+
 EXPOSE 8081
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD ["sh","-c","curl -sf http://127.0.0.1:8081/healthz || exit 1"]
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8081"]

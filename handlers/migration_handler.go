@@ -178,6 +178,7 @@ func decodeDataWithGzip(encoded string) (interface{}, error) {
 		return nil, err
 	}
 
+	// nosemgrep: go.lang.security.deserialization.unsafe-deserialization-interface.go-unsafe-deserialization-interface -- migration payload is an arbitrary JSON document relayed as-is; no typed schema exists and no type-driven behaviour is selected from it
 	var result interface{}
 	if err := json.Unmarshal(jsonData, &result); err != nil {
 		return nil, err

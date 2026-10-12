@@ -34,7 +34,7 @@ func InitKafka() *KafkaClient {
 
 	// Add SSL/SASL configuration if needed
 	if cfg.KafkaConfig.EnableSSL {
-		opts = append(opts, kgo.DialTLSConfig(&tls.Config{}))
+		opts = append(opts, kgo.DialTLSConfig(&tls.Config{MinVersion: tls.VersionTLS12}))
 	}
 
 	client, err := kgo.NewClient(opts...)
