@@ -19,7 +19,7 @@
   "dependencies": {
     "@strapi/plugin-cloud": "5.57.0",
     "@strapi/plugin-users-permissions": "5.57.0",
-    "@strapi/strapi": "5.57.0",
+    "@strapi/strapi": "5.58.0",
     "fs-extra": "^10.0.0",
     "jsonwebtoken": "^9.0.2",
     "mime-types": "^2.1.27",
